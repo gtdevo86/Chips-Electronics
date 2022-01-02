@@ -1,0 +1,110 @@
+main {
+  min-height: 80vh;
+}
+
+h3 {
+  padding: 1rem 0;
+}
+h1 {
+  font-size: 1.8rem;
+  padding: 1rem 0;
+}
+
+h2 {
+  font-size: 1.4rem;
+  padding: 0.5rem 0;
+}
+
+.rating span {
+  margin: 0.1rem;
+}
+
+.text-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.cart-image {
+  height: 3.5rem;
+  width: 3.5rem;
+}
+
+.form-icon {
+  width: 42px;
+}
+
+#login-form {
+  width: 412px;
+}
+
+#edit-product-form {
+  width: 575px;
+}
+
+#shipping-form {
+  width: 550px;
+}
+
+#edit-user-form {
+  width: 412px;
+}
+#user-register-form {
+  width: 550px;
+}
+
+.admin-checkbox {
+  left: 12px;
+  margin-left: 20px;
+  padding-left: -20px;
+}
+
+.isAdmin-icon {
+  margin-right: 15px;
+}
+
+.payment-listgroup {
+  padding-top: 30px;
+}
+
+.bottom-align-text {
+  padding-top: 8%;
+}
+
+.product-image {
+  text-align: center;
+  max-height: 220px;
+  width: auto;
+}
+
+/* carousel */
+.carousel-item-next,
+.carousel-item-prev,
+.carousel-item.active {
+  display: flex;
+}
+.carousel-caption {
+  position: absolute;
+  top: 0;
+}
+
+.carousel-caption h2 {
+  color: #fff;
+}
+
+.carousel img {
+  height: 300px;
+  padding: 30px;
+  margin: 40px;
+  border-radius: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.carousel a {
+  margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+  .carousel-caption h2 {
+    font-size: 2.5vw;
+  }
+}
