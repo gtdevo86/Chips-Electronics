@@ -3,7 +3,6 @@ import { Carousel, Image } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { listTopProducts } from '../actions/productActions'
-import Loader from './Loader'
 import Message from './Message'
 
 const ProductCarousel = () => {
@@ -17,7 +16,7 @@ const ProductCarousel = () => {
   }, [dispatch])
 
   return loading ? (
-    <Loader />
+    <></>
   ) : error ? (
     <Message variant='danger'>{error}</Message>
   ) : (

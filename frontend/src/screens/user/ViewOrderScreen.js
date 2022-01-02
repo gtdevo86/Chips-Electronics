@@ -4,7 +4,6 @@ import { Row, Col, ListGroup, Image, Form } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { getOrderDetails, updateDeliveryStatus } from '../../actions/orderActions'
 import Message from '../../components/Message'
-import Loader from '../../components/Loader'
 import {
   ORDER_DELIVERY_STATUS_RESET,
   ORDER_DETAILS_RESET,
@@ -74,7 +73,7 @@ const ViewOrderScreen = () => {
       {error ? (
         <Message variant='danger '>{error}</Message>
       ) : loading ? (
-        <Loader />
+        <></>
       ) : (
         <>
           <h1>

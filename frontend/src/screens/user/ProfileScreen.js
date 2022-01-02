@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { Form, Button, InputGroup, Row, Col, Table } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../../components/Message'
-import Loader from '../../components/Loader'
 import { getUserDetails, updateUserProfile } from '../../actions/userActions'
 import { listMyOrders } from '../../actions/orderActions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -30,7 +29,7 @@ const ProfileScreen = () => {
   const [message, setMessage] = useState(null)
 
   const userDetails = useSelector((state) => state.userDetails)
-  const { loading, error, user } = userDetails
+  const { error, user } = userDetails
 
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
@@ -83,7 +82,6 @@ const ProfileScreen = () => {
         {message && <Message variant='danger'>{message}</Message>}
         {error && <Message variant='danger'>{error}</Message>}
         {success && <Message variant='success'>Profile Updated</Message>}
-        {loading && <Loader />}
         <Form onSubmit={submitHandler}>
           <Form.Group controlId='firstName' className='my-2'>
             <InputGroup>
@@ -171,7 +169,7 @@ const ProfileScreen = () => {
       <Col md={9}>
         <h2>My Orders</h2>
         {loadingOrders ? (
-          <Loader />
+          <></>
         ) : errorOrders ? (
           <Message variant='danger'>{errorOrders}</Message>
         ) : (

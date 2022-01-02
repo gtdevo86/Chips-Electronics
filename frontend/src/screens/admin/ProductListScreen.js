@@ -3,7 +3,6 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { Table, Button, Row, Col } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../../components/Message'
-import Loader from '../../components/Loader'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -69,7 +68,7 @@ const ProductListScreen = () => {
       </Row>
       {errorDelete && <Message variant='danger'></Message>}
       {loading || loadingDelete ? (
-        <Loader />
+        <></>
       ) : error ? (
         <Message variant='danger'>{error}</Message>
       ) : (

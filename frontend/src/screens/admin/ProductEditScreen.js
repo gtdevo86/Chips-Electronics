@@ -4,7 +4,6 @@ import { useNavigate, useParams, Link } from 'react-router-dom'
 import { Form, Button, Row, Col, Card } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../../components/Message'
-import Loader from '../../components/Loader'
 import FormContainer from '../../components/FormContainer'
 import { listProductDetails, updateProduct } from '../../actions/productActions'
 import { PRODUCT_UPDATE_RESET } from '../../constants/productConstants'
@@ -25,7 +24,6 @@ const ProductEditScreen = () => {
   const [category, setCategory] = useState('')
   const [countInStock, setCountInStock] = useState(0)
   const [description, setDescription] = useState('')
-  const [uploading, setUploading] = useState(false)
   const [isLive, setIsLive] = useState(false)
 
   const userLogin = useSelector((state) => state.userLogin)
@@ -35,11 +33,7 @@ const ProductEditScreen = () => {
   const { loading, error, product } = productDetails
 
   const productUpdate = useSelector((state) => state.productUpdate)
-  const {
-    loading: loadingUpdate,
-    error: errorUpdate,
-    success: successUpdate,
-  } = productUpdate
+  const { error: errorUpdate, success: successUpdate } = productUpdate
 
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
@@ -67,7 +61,6 @@ const ProductEditScreen = () => {
     const file = e.target.files[0]
     const formData = new FormData()
     formData.append('image', file)
-    setUploading(true)
 
     try {
       const config = {
@@ -83,10 +76,8 @@ const ProductEditScreen = () => {
       )
 
       setImage(data)
-      setUploading(false)
     } catch (error) {
       console.error(error)
-      setUploading(false)
     }
   }
 
@@ -114,10 +105,9 @@ const ProductEditScreen = () => {
       </Link>
       <FormContainer id='edit-product-form'>
         <h1 style={{ textAlign: 'center' }}>Edit Product</h1>
-        {loadingUpdate && <Loader />}
         {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
         {loading ? (
-          <Loader />
+          <></>
         ) : error ? (
           <Message variant='danger'>{error}</Message>
         ) : (
@@ -160,7 +150,6 @@ const ProductEditScreen = () => {
                         accept='image/*'
                         onChange={uploadFileHandler}
                       ></Form.Control>
-                      {uploading && <Loader />}
                     </Form.Group>
                   </Col>
                   <Col>

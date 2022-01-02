@@ -3,7 +3,6 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { Table, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../../components/Message'
-import Loader from '../../components/Loader'
 import { deleteUser, listUsers } from '../../actions/userActions'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -46,7 +45,7 @@ const UserListScreen = () => {
     <>
       <h1>Users</h1>
       {loading ? (
-        <Loader />
+        <></>
       ) : error ? (
         <Message variant='danger'>{error}</Message>
       ) : (

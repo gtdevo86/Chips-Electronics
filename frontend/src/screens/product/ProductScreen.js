@@ -7,7 +7,6 @@ import {
   listProductDetails,
   createProductReview,
 } from '../../actions/productActions'
-import Loader from '../../components/Loader'
 import Message from '../../components/Message'
 import { Helmet } from 'react-helmet'
 import {
@@ -74,7 +73,7 @@ const ProductScreen = () => {
         Go back
       </Link>
       {loading ? (
-        <Loader />
+        <></>
       ) : error ? (
         <Message variant='danger'>{error}</Message>
       ) : (

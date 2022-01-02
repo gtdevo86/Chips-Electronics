@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Form, Button, Row, Col, InputGroup } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../../components/Message'
-import Loader from '../../components/Loader'
 import { login } from '../../actions/userActions'
 import FormContainer from '../../components/FormContainer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -26,7 +25,7 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('')
 
   const userLogin = useSelector((state) => state.userLogin)
-  const { loading, error, userInfo } = userLogin
+  const { error, userInfo } = userLogin
 
   useEffect(() => {
     if (userInfo) {
@@ -47,7 +46,6 @@ const LoginScreen = () => {
     <FormContainer id='login-form'>
       <h1 style={{ textAlign: 'center' }}>Sign In</h1>
       {error && <Message variant='danger'>{error}</Message>}
-      {loading && <Loader />}
       <Form onSubmit={submitHandler}>
         <Form.Group controlId='email' className='my-2'>
           <InputGroup>

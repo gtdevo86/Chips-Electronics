@@ -11,7 +11,6 @@ import ShippingModal from '../../components/ShippingModal'
 import BillingModal from '../../components/BillingModal'
 import PaymentModel from '../../components/PaymentModal'
 import { PayPalButton } from 'react-paypal-button-v2'
-import Loader from '../../components/Loader'
 import { CLEAR_CART } from '../../constants/cartConstants'
 
 const PlaceOrderScreen = () => {
@@ -132,7 +131,8 @@ const PlaceOrderScreen = () => {
                 <Button
                   type='button'
                   onClick={() => setShippingShow(true)}
-                  className='btn-sm'>
+                  className='btn-sm'
+                >
                   Change
                 </Button>
                 <p>
@@ -155,7 +155,8 @@ const PlaceOrderScreen = () => {
                 <Button
                   type='button'
                   onClick={() => setBillingShow(true)}
-                  className='btn-sm'>
+                  className='btn-sm'
+                >
                   Change
                 </Button>
                 <p>
@@ -178,7 +179,8 @@ const PlaceOrderScreen = () => {
                 <Button
                   type='button'
                   onClick={() => setPaymentShow(true)}
-                  className='btn-sm'>
+                  className='btn-sm'
+                >
                   Change
                 </Button>
                 <p>{cart.paymentMethod}</p>
@@ -268,7 +270,7 @@ const PlaceOrderScreen = () => {
                     {paymentMethod === 'Paypal' ? (
                       <>
                         {!sdkReady ? (
-                          <Loader />
+                          <></>
                         ) : (
                           <PayPalButton
                             amount={cart.total}

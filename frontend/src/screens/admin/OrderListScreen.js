@@ -3,7 +3,6 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { Table, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../../components/Message'
-import Loader from '../../components/Loader'
 import { useNavigate } from 'react-router-dom'
 import { listOrders } from '../../actions/orderActions'
 
@@ -34,7 +33,7 @@ const OrderListScreen = () => {
     <>
       <h1>Orders</h1>
       {loading ? (
-        <Loader />
+        <></>
       ) : error ? (
         <Message variant='danger'>{error}</Message>
       ) : (

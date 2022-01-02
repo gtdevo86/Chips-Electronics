@@ -3,7 +3,6 @@ import { useNavigate, useParams, Link } from 'react-router-dom'
 import { Form, Button, InputGroup, Card, Row, Col } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../../components/Message'
-import Loader from '../../components/Loader'
 import { getUserDetails, updateUser } from '../../actions/userActions'
 import FormContainer from '../../components/FormContainer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -31,11 +30,7 @@ const UserEditScreen = () => {
   const { loading, error, user } = userDetails
 
   const userUpdate = useSelector((state) => state.userUpdate)
-  const {
-    loading: loadingUpdate,
-    error: errorUpdate,
-    success: successUpdate,
-  } = userUpdate
+  const { error: errorUpdate, success: successUpdate } = userUpdate
 
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
@@ -69,10 +64,9 @@ const UserEditScreen = () => {
       </Link>
       <FormContainer id='edit-user-form'>
         <h1 style={{ textAlign: 'center' }}>Edit User</h1>
-        {loadingUpdate && <Loader />}
         {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
         {loading ? (
-          <Loader />
+          <></>
         ) : error ? (
           <Message variant='danger'>{error}</Message>
         ) : (

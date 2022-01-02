@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Form, Button, InputGroup } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../../components/Message'
-import Loader from '../../components/Loader'
 import { register } from '../../actions/userActions'
 import FormContainer from '../../components/FormContainer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -34,7 +33,7 @@ const RegisterScreen = () => {
   const [message, setMessage] = useState(null)
 
   const userRegister = useSelector((state) => state.userRegister)
-  const { loading, error, userInfo } = userRegister
+  const { error, userInfo } = userRegister
 
   useEffect(() => {
     if (userInfo) {
@@ -63,7 +62,6 @@ const RegisterScreen = () => {
       <h1 style={{ textAlign: 'center' }}>Sign Up</h1>
       {message && <Message variant='danger'>{message}</Message>}
       {error && <Message variant='danger'>{error}</Message>}
-      {loading && <Loader />}
       <Form onSubmit={submitHandler}>
         <Form.Group controlId='firstName' className='my-2'>
           <InputGroup>

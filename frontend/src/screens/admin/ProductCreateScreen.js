@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom'
 import { Form, Button, Row, Col, Card } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../../components/Message'
-import Loader from '../../components/Loader'
 import FormContainer from '../../components/FormContainer'
 import { createProduct } from '../../actions/productActions'
 
@@ -24,12 +23,7 @@ const ProductCreateScreen = () => {
   const { userInfo } = userLogin
 
   const productCreate = useSelector((state) => state.productCreate)
-  const {
-    product,
-    loading: loadingCreate,
-    error: errorCreate,
-    success: successCreate,
-  } = productCreate
+  const { product, error: errorCreate, success: successCreate } = productCreate
 
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
@@ -62,7 +56,6 @@ const ProductCreateScreen = () => {
       </Link>
       <FormContainer id='edit-product-form'>
         <h1 style={{ textAlign: 'center' }}>Create Product</h1>
-        {loadingCreate && <Loader />}
         {errorCreate && <Message variant='danger'>{errorCreate}</Message>}
         <Card className='py-3 px-3'>
           <Form onSubmit={submitHandler} id='createForm'>
