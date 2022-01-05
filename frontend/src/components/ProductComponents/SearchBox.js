@@ -16,7 +16,7 @@ const SearchBox = () => {
   }
   return (
     <Form onSubmit={submitHandler} className='row col'>
-      <Col className='col-8 col-md-9 col-lg-10 col-xl-10'>
+      <Col className='col-8 col-md-9 col-lg-8 col-xl-9'>
         <Form.Control
           type='text'
           name='q'

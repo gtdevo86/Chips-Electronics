@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { Form, Button, Row, Col, Card } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import Message from '../../components/Message'
-import FormContainer from '../../components/FormContainer'
+import Message from '../../components/HelperComonents/Message'
+import FormContainer from '../../components/HelperComonents/FormContainer'
 import { createProduct } from '../../actions/productActions'
 
 const ProductCreateScreen = () => {

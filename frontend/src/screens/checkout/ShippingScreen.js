@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { Form, Button, Row, Col, Card, ListGroup } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { saveAddress } from '../../actions/cartActions'
-import CheckoutSteps from '../../components/CheckoutSteps'
+import CheckoutSteps from '../../components/OrderComponents/CheckoutSteps'
 import { LinkContainer } from 'react-router-bootstrap'
-import StateSelector from '../../components/StateSelector'
+import StateSelector from '../../components/OrderComponents/StateSelector'
 
 const ShippingScreen = () => {
   document.title = 'Shipping Information'

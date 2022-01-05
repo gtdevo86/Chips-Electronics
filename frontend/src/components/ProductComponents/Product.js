@@ -19,6 +19,7 @@ const Product = ({ product }) => {
 
         <Card.Text as='div'>
           <Rating value={product.rating} text={`(${product.numReviews})`} />
+          {product.countInStock > 0 ? 'In Stock' : 'Out of stock'}
         </Card.Text>
 
         <Card.Text as='h3'>${product.price}</Card.Text>

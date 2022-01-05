@@ -24,6 +24,9 @@ import {
   PRODUCT_TOP_REQUEST,
   PRODUCT_TOP_SUCCESS,
   PRODUCT_TOP_FAIL,
+  PRODUCT_FILTER_REQUEST,
+  PRODUCT_FILTER_SUCCESS,
+  PRODUCT_FILTER_FAIL,
 } from '../constants/productConstants'
 
 export const listProducts =
@@ -50,6 +53,31 @@ export const listProducts =
     }
   }
 
+export const filterProducts =
+  (filters, pageNumber = '') =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: PRODUCT_FILTER_REQUEST })
+      const { data } = await axios.get(
+        `/api/products/filter/?filters=${encodeURIComponent(
+          JSON.stringify(filters)
+        )}&pageNumber=${pageNumber}`
+      )
+
+      dispatch({
+        type: PRODUCT_FILTER_SUCCESS,
+        payload: data,
+      })
+    } catch (error) {
+      dispatch({
+        type: PRODUCT_FILTER_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      })
+    }
+  }
 export const listProductDetails =
   (id, optionalRoute = '') =>
   async (dispatch) => {

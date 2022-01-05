@@ -12,6 +12,7 @@ import {
   productReviewCreateReducer,
   productReviewUpdateReducer,
   productTopRatedReducer,
+  productListFilteredReducer,
 } from './reducers/productReducers'
 import { urlReducer } from './reducers/urlReducers'
 import { cartReducer } from './reducers/cartReducers'
@@ -53,6 +54,7 @@ const reducer = combineReducers({
   productReviewCreate: productReviewCreateReducer,
   productReviewUpdate: productReviewUpdateReducer,
   productTopRated: productTopRatedReducer,
+  productListFiltered: productListFilteredReducer,
   cart: persistReducer(cartPersistConfig, cartReducer),
   url: urlReducer,
   userLogin: persistReducer(userLoginPersistConfig, userLoginReducer),

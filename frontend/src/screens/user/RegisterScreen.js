@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Form, Button, InputGroup } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import Message from '../../components/Message'
+import Message from '../../components/HelperComonents/Message'
 import { register } from '../../actions/userActions'
-import FormContainer from '../../components/FormContainer'
+import FormContainer from '../../components/HelperComonents/FormContainer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faUser,
@@ -37,7 +37,7 @@ const RegisterScreen = () => {
 
   useEffect(() => {
     if (userInfo) {
-      navigate(redirect)
+      navigate('redirect')
     }
   }, [navigate, userInfo, redirect])
 

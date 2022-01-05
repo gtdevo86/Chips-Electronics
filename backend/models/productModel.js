@@ -13,6 +13,10 @@ const reviewSchema = mongoose.Schema(
   },
   { timestamps: true }
 )
+const filterSchema = mongoose.Schema({
+  name: { type: String, required: false },
+  value: { type: String, required: false },
+})
 
 const productSchema = mongoose.Schema(
   {
@@ -47,6 +51,11 @@ const productSchema = mongoose.Schema(
       default: 0,
     },
     reviews: [reviewSchema],
+    filter1: filterSchema,
+    filter2: filterSchema,
+    filter3: filterSchema,
+    filter4: filterSchema,
+    filter5: filterSchema,
     numReviews: {
       type: Number,
       required: true,

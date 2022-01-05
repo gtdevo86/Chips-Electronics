@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col } from 'react-bootstrap'
-import Product from '../../components/Product'
-import Message from '../../components/Message'
+import Product from '../../components/ProductComponents/Product'
+import Message from '../../components/HelperComonents/Message'
 import { listProducts } from '../../actions/productActions'
 import { useLocation } from 'react-router-dom'
-import Paginate from '../../components/Paginate'
+import Paginate from '../../components/HelperComonents/Paginate'
 import queryString from 'query-string'
-import ProductCarousel from '../../components/ProductCarousel'
+import ProductCarousel from '../../components/ProductComponents/ProductCarousel'
 
 const HomeScreen = () => {
   document.title = 'Welcome to Chips Electronics'

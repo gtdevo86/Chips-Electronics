@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Button, Form, Modal } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { updateProductReview } from '../actions/productActions'
+import { updateProductReview } from '../../actions/productActions'
 
 const ReviewModal = (props) => {
   const dispatch = useDispatch()

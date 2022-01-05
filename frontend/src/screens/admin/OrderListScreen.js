@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { LinkContainer } from 'react-router-bootstrap'
 import { Table, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import Message from '../../components/Message'
+import Message from '../../components/HelperComonents/Message'
 import { useNavigate } from 'react-router-dom'
 import { listOrders } from '../../actions/orderActions'
 

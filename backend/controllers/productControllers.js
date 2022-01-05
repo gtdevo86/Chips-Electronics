@@ -4,34 +4,46 @@ import mongoose from 'mongoose'
 import fs from 'fs'
 import path from 'path'
 import products from '../data/products.js'
-
 //@desc     Fetch live products
 //@route    GET /api/products
 //@access   Public
 const getProducts = asyncHandler(async (req, res) => {
-  const pageSize = 10
+  const pageSize = 8
   const page = Number(req.query.pageNumber) || 1
-  let keywords = req.query.keyword.split(' ')
-  keywords = keywords.map(function (v) {
-    return new RegExp(v, 'i')
-  })
+  const keywords = req.query.keyword
+  if (keywords) {
+    const products = await Product.aggregate([
+      {
+        $search: {
+          index: 'searchindex',
+          text: {
+            query: keywords,
+            path: {
+              wildcard: '*',
+            },
+          },
+        },
+      },
+      { $match: { isLive: true } },
+    ])
+    res.json({ products, page, pages: Math.ceil(products.count / pageSize) })
+  } else {
+    const count = await Product.count({}).where('isLive').equals(true)
 
-  const count = await Product.count({ name: { $in: keywords } })
-    .where('isLive')
-    .equals(true)
-  const products = await Product.find({ name: { $in: keywords } })
-    .where('isLive')
-    .equals(true)
-    .limit(pageSize)
-    .skip(pageSize * (page - 1))
-  res.json({ products, page, pages: Math.ceil(count / pageSize) })
+    const products = await Product.find({})
+      .where('isLive')
+      .equals(true)
+      .limit(pageSize)
+      .skip(pageSize * (page - 1))
+    res.json({ products, page, pages: Math.ceil(count / pageSize) })
+  }
 })
 
 //@desc     Fetch all products
 //@route    GET /api/products/admin
-//@access   Public
+//@access   Private/Admin
 const getProductsAdmin = asyncHandler(async (req, res) => {
-  const pageSize = 10
+  const pageSize = 20
   const page = Number(req.query.pageNumber) || 1
 
   const count = await Product.count({})
@@ -39,6 +51,44 @@ const getProductsAdmin = asyncHandler(async (req, res) => {
     .limit(pageSize)
     .skip(pageSize * (page - 1))
   res.json({ products, page, pages: Math.ceil(count / pageSize) })
+})
+
+//@desc     Get Products with the applied filter
+//@route    GET /api/products/filter
+//@access   Public
+const getFilteredProducts = asyncHandler(async (req, res) => {
+  const pageSize = 8
+  const page = Number(req.query.pageNumber) || 1
+  var filters = JSON.parse(req.query.filters)
+  var category = filters.category
+  var brand = filters.brand?.split(',')
+  var filter1 = filters.filter1?.split(',') || '*'
+  var filter2 = filters.filter2?.split(',') || '*'
+  var filter3 = filters.filter3?.split(',') || '*'
+  var filter4 = filters.filter4?.split(',') || '*'
+  var filter5 = filters.filter5?.split(',') || '*'
+  var minStock = filters.minStock
+
+  if (!brand[0]) brand = [/|/]
+  if (!filter1[0]) filter1 = [/|/]
+  if (!filter2[0]) filter2 = [/|/]
+  if (!filter3[0]) filter3 = [/|/]
+  if (!filter4[0]) filter4 = [/|/]
+  if (!filter5[0]) filter5 = [/|/]
+
+  const products = await Product.find({
+    $and: [
+      { category: category },
+      { brand: { $in: brand } },
+      { 'filter1.value': filter1 },
+      { 'filter2.value': { $in: filter2 } },
+      { 'filter3.value': { $in: filter3 } },
+      { 'filter4.value': { $in: filter4 } },
+      { 'filter5.value': { $in: filter5 } },
+      { countInStock: { $gte: minStock } },
+    ],
+  })
+  res.json({ products, page, pages: Math.ceil(products.count / pageSize) })
 })
 
 //@desc     Fetch single product if live
@@ -63,6 +113,11 @@ const getProductById = asyncHandler(async (req, res) => {
         isLive: product.isLive,
         index: -1,
         reviews: product.reviews,
+        filter1: product.filter1,
+        filter2: product.filter2,
+        filter3: product.filter3,
+        filter4: product.filter4,
+        filter5: product.filter5,
       })
     } else {
       res.status(404)
@@ -74,7 +129,7 @@ const getProductById = asyncHandler(async (req, res) => {
   }
 })
 
-//@desc     Fetch single product if live along with the index of the review of the logged in user
+//@desc     Fetch single product with token
 //@route    GET /api/products/:id/loggedIn
 //@access   Private
 const getProductByIdLoggedin = asyncHandler(async (req, res) => {
@@ -94,6 +149,11 @@ const getProductByIdLoggedin = asyncHandler(async (req, res) => {
         numReviews: product.numReviews,
         description: product.description,
         isLive: product.isLive,
+        filter1: product.filter1,
+        filter2: product.filter2,
+        filter3: product.filter3,
+        filter4: product.filter4,
+        filter5: product.filter5,
         index: product.reviews.findIndex(
           (r) => r.user.toString() === req.user._id.toString()
         ),
@@ -109,7 +169,7 @@ const getProductByIdLoggedin = asyncHandler(async (req, res) => {
   }
 })
 
-//@desc     Fetch single product
+//@desc     Fetch single product for admin
 //@route    GET /api/products/:id/admin
 //@access   Private/Admin
 const getProductByIdAdmin = asyncHandler(async (req, res) => {
@@ -162,6 +222,11 @@ const createProduct = asyncHandler(async (req, res) => {
     price: price,
     user: req.user._id,
     image: ['/images/sample.jpg'],
+    filter1: { name: '', value: '' },
+    filter2: { name: '', value: '' },
+    filter3: { name: '', value: '' },
+    filter4: { name: '', value: '' },
+    filter5: { name: '', value: '' },
     brand: brand,
     category: category,
     countInStock: countInStock,
@@ -178,8 +243,21 @@ const createProduct = asyncHandler(async (req, res) => {
 //@route    PUT /api/products/:id
 //@access   Private/Admin
 const updateProduct = asyncHandler(async (req, res) => {
-  const { name, price, description, image, brand, category, countInStock, isLive } =
-    req.body
+  const {
+    name,
+    price,
+    description,
+    image,
+    brand,
+    category,
+    countInStock,
+    isLive,
+    filter1,
+    filter2,
+    filter3,
+    filter4,
+    filter5,
+  } = req.body
 
   const product = await Product.findById(req.params.id)
 
@@ -192,6 +270,11 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.category = category
     product.countInStock = countInStock
     product.isLive = isLive
+    product.filter1 = filter1
+    product.filter2 = filter2
+    product.filter3 = filter3
+    product.filter4 = filter4
+    product.filter5 = filter5
 
     const updatedProduct = await product.save()
     res.json(updatedProduct)
@@ -325,4 +408,5 @@ export {
   getProductByIdLoggedin,
   editReview,
   getTopProducts,
+  getFilteredProducts,
 }

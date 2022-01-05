@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Form, Button, Row, Col, InputGroup } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import Message from '../../components/Message'
+import Message from '../../components/HelperComonents/Message'
 import { login } from '../../actions/userActions'
-import FormContainer from '../../components/FormContainer'
+import FormContainer from '../../components/HelperComonents/FormContainer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope, faKey } from '@fortawesome/free-solid-svg-icons'
 import { USER_LOGIN_RESET } from '../../constants/userConstants'
@@ -19,7 +19,7 @@ const LoginScreen = () => {
 
   const parsed = queryString.parse(location.search)
 
-  const redirect = parsed.redirect
+  const redirect = parsed.redirect === 'register' ? '' : parsed.redirect
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

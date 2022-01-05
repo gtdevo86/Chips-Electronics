@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import { Form, Button, Row, Col, Card, ListGroup } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { savePaymentMethod } from '../../actions/cartActions'
-import CheckoutSteps from '../../components/CheckoutSteps'
+import CheckoutSteps from '../../components/OrderComponents/CheckoutSteps'
 import { LinkContainer } from 'react-router-bootstrap'
 import { CART_SAVE_PAYMENT_RESET } from '../../constants/cartConstants'
-import Message from '../../components/Message'
+import Message from '../../components/HelperComonents/Message'
 
 const PaymentScreen = () => {
   document.title = 'Payment Information'

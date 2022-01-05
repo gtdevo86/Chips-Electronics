@@ -3,8 +3,8 @@ import axios from 'axios'
 import { useNavigate, useParams, Link } from 'react-router-dom'
 import { Form, Button, Row, Col, Card } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import Message from '../../components/Message'
-import FormContainer from '../../components/FormContainer'
+import Message from '../../components/HelperComonents/Message'
+import FormContainer from '../../components/HelperComonents/FormContainer'
 import { listProductDetails, updateProduct } from '../../actions/productActions'
 import { PRODUCT_UPDATE_RESET } from '../../constants/productConstants'
 
@@ -25,6 +25,16 @@ const ProductEditScreen = () => {
   const [countInStock, setCountInStock] = useState(0)
   const [description, setDescription] = useState('')
   const [isLive, setIsLive] = useState(false)
+  const [filter1Name, setFilter1Name] = useState('')
+  const [filter1Value, setFilter1Value] = useState('')
+  const [filter2Name, setFilter2Name] = useState('')
+  const [filter2Value, setFilter2Value] = useState('')
+  const [filter3Name, setFilter3Name] = useState('')
+  const [filter3Value, setFilter3Value] = useState('')
+  const [filter4Name, setFilter4Name] = useState('')
+  const [filter4Value, setFilter4Value] = useState('')
+  const [filter5Name, setFilter5Name] = useState('')
+  const [filter5Value, setFilter5Value] = useState('')
 
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
@@ -51,6 +61,16 @@ const ProductEditScreen = () => {
         setCountInStock(product.countInStock)
         setDescription(product.description)
         setIsLive(product.isLive)
+        setFilter1Name(product.filter1.name)
+        setFilter1Value(product.filter1.value)
+        setFilter2Name(product.filter2.name)
+        setFilter2Value(product.filter2.value)
+        setFilter3Name(product.filter3.name)
+        setFilter3Value(product.filter3.value)
+        setFilter4Name(product.filter4.name)
+        setFilter4Value(product.filter4.value)
+        setFilter5Name(product.filter5.name)
+        setFilter5Value(product.filter5.value)
       }
     } else {
       navigate('/login')
@@ -83,6 +103,21 @@ const ProductEditScreen = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault()
+    let list = [
+      { k: filter1Name, v: filter1Value },
+      { k: filter2Name, v: filter2Value },
+      { k: filter3Name, v: filter3Value },
+      { k: filter4Name, v: filter4Value },
+      { k: filter5Name, v: filter5Value },
+    ]
+    list.sort((a, b) => {
+      if (!a.k) return 1
+      if (!b.k) return -1
+      if (a.k > b.k) return 1
+      if (a.k < b.k) return -1
+      return 0
+    })
+
     dispatch(
       updateProduct({
         _id: productId,
@@ -94,6 +129,11 @@ const ProductEditScreen = () => {
         description,
         countInStock,
         isLive,
+        filter1: { name: list[0].k, value: list[0].v },
+        filter2: { name: list[1].k, value: list[1].v },
+        filter3: { name: list[2].k, value: list[2].v },
+        filter4: { name: list[3].k, value: list[3].v },
+        filter5: { name: list[4].k, value: list[4].v },
       })
     )
   }
@@ -211,13 +251,128 @@ const ProductEditScreen = () => {
                   />
                 </Form.Group>
               </Form>
+              <Row>
+                <Col>
+                  <Form.Group controlId='filter1name' className='my-2'>
+                    <Form.Label>Filter 1 Name:</Form.Label>
+                    <Form.Control
+                      type='text'
+                      placeholder=''
+                      value={filter1Name}
+                      onChange={(e) => setFilter1Name(e.target.value)}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group controlId='filter1value' className='my-2'>
+                    <Form.Label>Filter 1 Value:</Form.Label>
+                    <Form.Control
+                      type='text'
+                      placeholder=''
+                      value={filter1Value}
+                      onChange={(e) => setFilter1Value(e.target.value)}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group controlId='filter2name' className='my-2'>
+                    <Form.Label>Filter 2 Name:</Form.Label>
+                    <Form.Control
+                      type='text'
+                      placeholder=''
+                      value={filter2Name}
+                      onChange={(e) => setFilter2Name(e.target.value)}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group controlId='filter2value' className='my-2'>
+                    <Form.Label>Filter 2 Value:</Form.Label>
+                    <Form.Control
+                      type='text'
+                      placeholder=''
+                      value={filter2Value}
+                      onChange={(e) => setFilter2Value(e.target.value)}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group controlId='filter3name' className='my-2'>
+                    <Form.Label>Filter 3 Name:</Form.Label>
+                    <Form.Control
+                      type='text'
+                      placeholder=''
+                      value={filter3Name}
+                      onChange={(e) => setFilter3Name(e.target.value)}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group controlId='filter3value' className='my-2'>
+                    <Form.Label>Filter 3 Value:</Form.Label>
+                    <Form.Control
+                      type='text'
+                      placeholder=''
+                      value={filter3Value}
+                      onChange={(e) => setFilter3Value(e.target.value)}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group controlId='filter4name' className='my-2'>
+                    <Form.Label>Filter 4 Name:</Form.Label>
+                    <Form.Control
+                      type='text'
+                      placeholder=''
+                      value={filter4Name}
+                      onChange={(e) => setFilter4Name(e.target.value)}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group controlId='filter4value' className='my-2'>
+                    <Form.Label>Filter 4 Value:</Form.Label>
+                    <Form.Control
+                      type='text'
+                      placeholder=''
+                      value={filter4Value}
+                      onChange={(e) => setFilter4Value(e.target.value)}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group controlId='filter5name' className='my-2'>
+                    <Form.Label>Filter 5 Name:</Form.Label>
+                    <Form.Control
+                      type='text'
+                      placeholder=''
+                      value={filter5Name}
+                      onChange={(e) => setFilter5Name(e.target.value)}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group controlId='filter5value' className='my-2'>
+                    <Form.Label>Filter 5 Value:</Form.Label>
+                    <Form.Control
+                      type='text'
+                      placeholder=''
+                      value={filter5Value}
+                      onChange={(e) => setFilter5Value(e.target.value)}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
             </Card>
             <Row className='my-2'>
-              {/*<Col className='d-grid'>
-                <Button type='submit' variant='primary' form='editForm'>
-                  Manage Images
-                </Button>
-              </Col>*/}
               <Col className='d-grid'>
                 <Button type='submit' variant='primary' form='editForm'>
                   Update Product

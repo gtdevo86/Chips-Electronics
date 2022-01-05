@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { LinkContainer } from 'react-router-bootstrap'
 import { Table, Button, Row, Col } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import Message from '../../components/Message'
+import Message from '../../components/HelperComonents/Message'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -14,7 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { deleteProduct, listProducts } from '../../actions/productActions'
 import { PRODUCT_CREATE_RESET } from '../../constants/productConstants'
-import Paginate from '../../components/Paginate'
+import Paginate from '../../components/HelperComonents/Paginate'
 import queryString from 'query-string'
 
 const ProductListScreen = () => {

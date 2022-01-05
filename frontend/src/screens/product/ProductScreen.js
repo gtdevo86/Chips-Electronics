@@ -1,19 +1,27 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Row, Col, Image, ListGroup, Card, Button, Form } from 'react-bootstrap'
-import Rating from '../../components/Rating'
 import {
-  listProductDetails,
-  createProductReview,
-} from '../../actions/productActions'
-import Message from '../../components/Message'
+  Row,
+  Col,
+  Image,
+  ListGroup,
+  Card,
+  Button,
+  Form,
+  Tabs,
+  Tab,
+} from 'react-bootstrap'
+import Rating from '../../components/ProductComponents/Rating'
+import { listProductDetails } from '../../actions/productActions'
+import Message from '../../components/HelperComonents/Message'
 import { Helmet } from 'react-helmet'
 import {
   PRODUCT_CREATE_REVIEW_RESET,
   PRODUCT_DETAILS_RESET,
 } from '../../constants/productConstants'
-import ReviewModal from '../../components/ReviewModal'
+import ReviewTab from '../../components/ProductComponents/ReviewTab'
+import DescriptionTab from '../../components/ProductComponents/DescriptionTab'
 
 const ProductScreen = () => {
   //document.title = 'loading...'
@@ -23,18 +31,13 @@ const ProductScreen = () => {
   const params = useParams()
 
   const [qty, setQty] = useState(1)
-  const [rating, setRating] = useState(0)
-  const [comment, setComment] = useState('')
-  const [reviewShow, setReviewShow] = useState(false)
+  const [tabKey, setTabKey] = useState('Description')
 
   const productDetails = useSelector((state) => state.productDetails)
   const { loading, error, product } = productDetails
 
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
-
-  const productReviewCreate = useSelector((state) => state.productReviewCreate)
-  const { error: reviewError, success: reviewSuccess } = productReviewCreate
 
   useEffect(() => {
     dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
@@ -47,24 +50,10 @@ const ProductScreen = () => {
       if (userInfo) extraparam = 'loggedIn'
       dispatch(listProductDetails(params.id, extraparam))
     }
-    if (reviewSuccess) {
-      alert('Review Submitted')
-      setRating(0)
-      setComment('')
-      dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
-      let extraparam = ''
-      if (userInfo) extraparam = 'loggedIn'
-      dispatch(listProductDetails(params.id, extraparam))
-    }
-  }, [dispatch, params, reviewSuccess, product, userInfo, loading])
+  }, [dispatch, params, product, userInfo, loading])
 
   const addToCartHandler = () => {
     navigate(`/cart/${params.id}?qty=${qty}`)
-  }
-
-  const submitHandler = (e) => {
-    e.preventDefault()
-    dispatch(createProductReview(params.id, { rating, comment }))
   }
 
   return (
@@ -89,18 +78,21 @@ const ProductScreen = () => {
               <ListGroup variant='flush' className='list-group-item-success'>
                 <ListGroup.Item>
                   <h3>{product.name}</h3>
-                </ListGroup.Item>
-
-                <ListGroup.Item>
+                  Brand: {product.brand}
                   <Rating
                     value={product.rating}
-                    text={`${product.numReviews} reviews`}
+                    text={`(${product.numReviews})`}
+                    className='py-3'
                   />
                 </ListGroup.Item>
 
-                <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
-
-                <ListGroup.Item>Description: {product.description}</ListGroup.Item>
+                <ListGroup.Item>
+                  <h4 style={{ color: '#b12704' }}>
+                    <strong>${product.price}</strong>
+                  </h4>
+                  {product.countInStock > 0 ? 'In Stock' : 'Out of stock'}
+                </ListGroup.Item>
+                <ListGroup.Item></ListGroup.Item>
               </ListGroup>
             </Col>
             <Col lg={3}>
@@ -109,7 +101,11 @@ const ProductScreen = () => {
                   <ListGroup.Item>
                     <Row>
                       <Col>Price:</Col>
-                      <Col>${product.price}</Col>
+                      <Col>
+                        <h4 style={{ color: '#b12704' }}>
+                          <strong>${product.price}</strong>
+                        </h4>
+                      </Col>
                     </Row>
                   </ListGroup.Item>
 
@@ -147,102 +143,28 @@ const ProductScreen = () => {
               </Card>
             </Col>
           </Row>
-          <Row>
-            <Col lg={9}>
-              <h2>Reviews</h2>
-              {product.reviews.length === 0 && <Message>No Reviews</Message>}
-              <ListGroup variant='flush'>
-                {product.index > -1 && (
-                  <ListGroup.Item key={product.reviews[product.index]._id}>
-                    <strong>
-                      <p>My Review:</p>
-                      {product.reviews[product.index].name}{' '}
-                      <Link to='' onClick={() => setReviewShow(true)}>
-                        Edit Review
-                      </Link>
-                    </strong>
-                    <Rating value={product.reviews[product.index].rating} />
-                    <p>
-                      Review created at:{' '}
-                      {product.reviews[product.index].createdAt.substring(0, 10)}
-                    </p>
-                    <p>{product.reviews[product.index].comment}</p>
-                  </ListGroup.Item>
-                )}
-                {product.reviews.map((review) => (
-                  <>
-                    {userInfo && userInfo._id !== review.user && (
-                      <ListGroup.Item key={review._id}>
-                        <strong>{review.name}</strong>
-                        <Rating value={review.rating} />
-                        <p>
-                          Review created at: {review.createdAt.substring(0, 10)}
-                        </p>
-                        <p>{review.comment}</p>
-                      </ListGroup.Item>
-                    )}
-                    {!userInfo && (
-                      <ListGroup.Item key={review._id}>
-                        <strong>{review.name}</strong>
-                        <Rating value={review.rating} />
-                        <p>
-                          Review created at: {review.createdAt.substring(0, 10)}
-                        </p>
-                        <p>{review.comment}</p>
-                      </ListGroup.Item>
-                    )}
-                  </>
-                ))}
-                {product.index === -1 && (
-                  <ListGroup.Item>
-                    <h2>Write a Customer Review </h2>
-                    {reviewError && (
-                      <Message variant='danger'>{reviewError}</Message>
-                    )}
-                    {userInfo ? (
-                      <Form onSubmit={submitHandler}>
-                        <Form.Group controlId='rating'>
-                          <Form.Label>Rating</Form.Label>
-                          <Form.Control
-                            as='select'
-                            value={rating}
-                            onChange={(e) => setRating(e.target.value)}
-                          >
-                            <option value=''>Select...</option>
-                            <option value='1'>1 - Poor</option>
-                            <option value='2'>2 - Fair</option>
-                            <option value='3'>3 - Good</option>
-                            <option value='4'>4 - Very Good</option>
-                            <option value='5'>5 - Excellent</option>
-                          </Form.Control>
-                        </Form.Group>
-                        <Form.Group controlId='comment'>
-                          <Form.Label>Comment</Form.Label>
-                          <Form.Control
-                            as='textarea'
-                            row='3'
-                            value={comment}
-                            onChange={(e) => setComment(e.target.value)}
-                          ></Form.Control>
-                        </Form.Group>
-                        <Button type='submit'>Submit</Button>
-                      </Form>
-                    ) : (
-                      <Message>Sign in to write a review</Message>
-                    )}
-                  </ListGroup.Item>
-                )}
-              </ListGroup>
-            </Col>
-          </Row>
+          <Tabs
+            activeKey={tabKey}
+            onSelect={(k) => setTabKey(k)}
+            className='mb-3 my-5'
+          >
+            <Tab eventKey='Description' title='Description'>
+              <DescriptionTab
+                description={product.description}
+                tagArray={[
+                  product.filter1,
+                  product.filter2,
+                  product.filter3,
+                  product.filter4,
+                  product.filter5,
+                ]}
+              />
+            </Tab>
+            <Tab eventKey='Reviews' title='Reviews'>
+              <ReviewTab id={params.id} />
+            </Tab>
+          </Tabs>
         </>
-      )}
-      {userInfo && product.reviews.length > 0 && product.index > -1 && (
-        <ReviewModal
-          id={params.id}
-          show={reviewShow}
-          onHide={() => setReviewShow(false)}
-        />
       )}
     </>
   )
