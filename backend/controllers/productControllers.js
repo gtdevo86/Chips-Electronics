@@ -15,7 +15,7 @@ const getProducts = asyncHandler(async (req, res) => {
     const products = await Product.aggregate([
       {
         $search: {
-          index: 'searchindex',
+          index: 'default',
           text: {
             query: keywords,
             path: {

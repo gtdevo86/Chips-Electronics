@@ -4,15 +4,17 @@ import { Row, Col, Accordion, Form, Button } from 'react-bootstrap'
 import Product from '../../components/ProductComponents/Product'
 import Message from '../../components/HelperComonents/Message'
 import { filterProducts } from '../../actions/productActions'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import Paginate from '../../components/HelperComonents/Paginate'
 import queryString from 'query-string'
 import filters from '../../helpers/filterModel'
 
 const HomeScreen = () => {
   document.title = 'Welcome to Chips Electronics'
+  var checkIndex = 0
   const dispatch = useDispatch()
   const location = useLocation()
+  const navigate = useNavigate()
   const parsed = queryString.parse(location.search)
   const component = parsed.c
   const pageNumber = parsed.page || 1
@@ -28,10 +30,9 @@ const HomeScreen = () => {
   const [filter3, setFilter3] = useState('') //3
   const [filter4, setFilter4] = useState('') //4
   const [filter5, setFilter5] = useState('') //5
-  const [accordianKeys, setAccordianKeys] = useState('')
-  var checkIndex = 0
 
   const [arrayCheck, setArrayCheck] = useState(tempArray)
+  //if (!component) navigate('/')
 
   useEffect(() => {
     let items = arrayCheck
@@ -70,6 +71,7 @@ const HomeScreen = () => {
     else if (component === 'Motherboards') return filters[2]
     else if (component === 'Video Cards') return filters[3]
     else if (component === 'Storage') return filters[4]
+    else navigate('/')
   }
   const pageFilterArray = getFilterArray()
 
@@ -151,8 +153,7 @@ const HomeScreen = () => {
   return (
     <>
       <h1>Latest Products</h1>
-
-      {loading ? (
+      {loading || !pageFilterArray ? (
         <></>
       ) : error ? (
         <Message variant='danger '>{error}</Message>

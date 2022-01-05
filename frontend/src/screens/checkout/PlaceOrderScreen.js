@@ -198,7 +198,7 @@ const PlaceOrderScreen = () => {
                     <Col md={1}>
                       <Image src={item.image} alt={item.name} fluid rounded />
                     </Col>
-                    <Col md={5} className='my-3'>
+                    <Col md={6} className='my-3'>
                       <strong>
                         <Link to={`/product/${item.product}`} className='text-link'>
                           {item.name}

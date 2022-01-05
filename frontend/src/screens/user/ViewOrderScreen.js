@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Row, Col, ListGroup, Image, Form } from 'react-bootstrap'
+import { Row, Col, ListGroup, Image, Form, Card } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { getOrderDetails, updateDeliveryStatus } from '../../actions/orderActions'
 import Message from '../../components/HelperComonents/Message'
@@ -76,166 +76,147 @@ const ViewOrderScreen = () => {
         <></>
       ) : (
         <>
-          <h1>
+          <h2>
             <Link
               to={userInfo && userInfo.isAdmin ? '/admin/orderlist' : '/profile'}
             >
               Order
             </Link>{' '}
             / {order._id}
-          </h1>
+          </h2>
           <Row>
-            <Col md={8}>
-              <ListGroup variant='flush'>
-                <ListGroup.Item>
-                  <h2>Shipping</h2>
-                  <p>
-                    <strong>Name: </strong>
-                    {order.user.firstName} {order.user.lastName}
-                  </p>
-
-                  <p>
-                    <strong>Email: </strong>
-                    <a href={`mailto:${order.user.email}`} className='text-link'>
-                      {order.user.email}
-                    </a>
-                  </p>
-
-                  <p>
-                    <strong>Shipping Address: </strong>
-                    {order.shippingAddress.address1},{' '}
-                    {order.shippingAddress.address2
-                      ? `${order.shippingAddress.address2}, `
-                      : ''}{' '}
-                    {order.shippingAddress.city}, {order.shippingAddress.postalCode}
-                    , {order.shippingAddress.country}
-                  </p>
-
-                  <p>
-                    <strong>Billing Address: </strong>
-                    {order.billingAddress.address1},{' '}
-                    {order.billingAddress.address2
-                      ? `${order.billingAddress.address2}, `
-                      : ''}{' '}
-                    {order.billingAddress.city}, {order.billingAddress.postalCode},{' '}
-                    {order.billingAddress.country}
-                  </p>
-                  {order.deliveryStatus === 'Delivered' ? (
-                    <Message variant='success'>
-                      Delivered on {order.updatedAt.substring(0, 10)}
-                    </Message>
-                  ) : (
-                    <Message variant='info'>{order.deliveryStatus}</Message>
-                  )}
-                </ListGroup.Item>
-
-                <ListGroup.Item>
-                  <h2>Payment Method</h2>
-                  <p>
-                    <strong>Method: </strong>
-                    {order.paymentMethod}
-                  </p>
-                  {order.paymentMethod === 'Paypal' && (
+            <Col xs={12} xl={8}>
+              <Card className='py-3 px-4'>
+                <Row>
+                  <Col>
+                    <strong>Shipping Address</strong>{' '}
                     <p>
-                      <strong>Transaction Id: </strong>
-                      {order.payPalResult.id}
+                      {order.shippingAddress.address1}
+                      <br />
+                      {order.shippingAddress.address2 && (
+                        <>
+                          {order.shippingAddress.address2} <br />
+                        </>
+                      )}
+                      {order.shippingAddress.city}, {order.shippingAddress.state}{' '}
+                      {order.shippingAddress.postalCode}
+                      <br />
+                      {order.shippingAddress.country}
                     </p>
-                  )}
-                </ListGroup.Item>
+                  </Col>
 
-                <ListGroup.Item>
-                  <h2>Item Summary</h2>
-                  <ListGroup variant='flush'>
-                    {order.orderItems.map((item, index) => (
-                      <ListGroup.Item key={index}>
-                        <Row>
-                          <Col md={1}>
-                            <Image src={item.image} alt={item.name} fluid rounded />
-                          </Col>
+                  <Col>
+                    <strong>Billing Address</strong>{' '}
+                    <p>
+                      {order.billingAddress.address1}
+                      <br />
+                      {order.billingAddress.address2 && (
+                        <>
+                          {order.billingAddress.address2} <br />
+                        </>
+                      )}
+                      {order.billingAddress.city}, {order.billingAddress.state}{' '}
+                      {order.billingAddress.postalCode}
+                      <br />
+                      {order.billingAddress.country}
+                    </p>
+                  </Col>
 
-                          <Col>
+                  <Col>
+                    <strong>Payment Method</strong> <p>{order.paymentMethod}</p>
+                    {order.paymentMethod === 'Paypal' && (
+                      <p>
+                        <strong>Transaction Id: </strong>
+                        {order.payPalResult.id}
+                      </p>
+                    )}
+                  </Col>
+                </Row>
+              </Card>
+              <h2>Order Status:</h2>
+              {order.deliveryStatus === 'Delivered' ? (
+                <Message variant='success'>
+                  Delivered on {order.updatedAt.substring(0, 10)}
+                </Message>
+              ) : (
+                <Message variant='info'>{order.deliveryStatus}</Message>
+              )}
+              <h2>Item Summary</h2>
+              <Card>
+                <ListGroup variant='flush'>
+                  {order.orderItems.map((item, index) => (
+                    <ListGroup.Item key={index}>
+                      <Row>
+                        <Col md={1}>
+                          <Image src={item.image} alt={item.name} fluid rounded />
+                        </Col>
+                        <Col md={7} className='my-3'>
+                          <strong>
                             <Link
                               to={`/product/${item.product}`}
                               className='text-link'
                             >
                               {item.name}
                             </Link>
-                          </Col>
+                          </strong>
+                        </Col>
 
-                          <Col md={4}>
-                            <pre>
-                              {' '}
-                              {formatNumber(item.qty, 2, false)} X{' '}
-                              {formatNumber(item.price, 3, true)} ={' '}
-                              {formatNumber(
-                                addDecimals(item.qty * item.price),
-                                4,
-                                true
-                              )}
-                            </pre>
-                          </Col>
-                        </Row>
-                      </ListGroup.Item>
-                    ))}
-                  </ListGroup>
-                </ListGroup.Item>
-              </ListGroup>
+                        <Col className='my-3'>
+                          {formatNumber(item.price, 3, true)}
+                        </Col>
+
+                        <Col className='my-3'>
+                          Qty: {formatNumber(item.qty, 2, false)}
+                        </Col>
+
+                        <Col style={{ textAlign: 'right' }} className='my-3'>
+                          $<strong>{addDecimals(item.qty * item.price)}</strong>
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              </Card>
             </Col>
 
-            <Col md={4} xl={3}>
-              <ListGroup cariant='flush'>
-                <ListGroup.Item>
-                  <h2 style={{ textAlign: 'center' }}>Order Summary</h2>
-                </ListGroup.Item>
+            <Col xs={12} xl={4} xxl={3}>
+              <Card>
+                <ListGroup variant='flush'>
+                  <ListGroup.Item>
+                    <h2>Summary</h2>
 
-                <ListGroup.Item>
-                  <Row>
-                    <Col>Items</Col>
-                    <Col style={{ textAlign: 'right' }}>
-                      ${addDecimals(order.subTotal)}
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
+                    <Row>
+                      <Col>Item(s)</Col>
+                      <Col style={{ textAlign: 'right' }}>
+                        $<strong>{order.subTotal}</strong>
+                      </Col>
+                    </Row>
 
-                <ListGroup.Item>
-                  <Row>
-                    <Col>Shipping</Col>
-                    <Col style={{ textAlign: 'right' }}>
-                      ${addDecimals(order.shippingCost)}
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
+                    <Row>
+                      <Col>Shipping</Col>
+                      <Col style={{ textAlign: 'right' }}>
+                        $<strong>{addDecimals(order.shippingCost)}</strong>
+                      </Col>
+                    </Row>
 
-                <ListGroup.Item>
-                  <Row>
-                    <Col>Tax</Col>
-                    <Col style={{ textAlign: 'right' }}>
-                      ${addDecimals(order.tax)}
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
+                    <Row>
+                      <Col>Tax</Col>
+                      <Col style={{ textAlign: 'right' }}>
+                        $<strong>{order.tax}</strong>
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
 
-                <ListGroup.Item>
-                  <Row>
-                    <Col>Total</Col>
-                    <Col style={{ textAlign: 'right' }}>
-                      ${addDecimals(order.total)}
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
-                {userInfo &&
-                  userInfo.isAdmin &&
-                  order.deliveryStatus !== 'Delivered' && (
-                    <Form.Select
-                      onChange={statusHandler}
-                      value={order.deliveryStatus}
-                    >
-                      <option value='Proccessing'>Proccessing</option>
-                      <option value='Shipped'>Shipped</option>
-                      <option value='Delivered'>Delivered</option>
-                    </Form.Select>
-                  )}
-              </ListGroup>
+                  <ListGroup.Item>
+                    <Row>
+                      <Col>Total</Col>
+                      <Col style={{ textAlign: 'right' }}>
+                        $<strong>{order.total}</strong>
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                </ListGroup>
+              </Card>
             </Col>
           </Row>
         </>
