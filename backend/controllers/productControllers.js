@@ -11,6 +11,7 @@ const getProducts = asyncHandler(async (req, res) => {
   const pageSize = 8
   const page = Number(req.query.pageNumber) || 1
   const keywords = req.query.keyword
+
   if (keywords) {
     const products = await Product.aggregate([
       {
@@ -26,16 +27,20 @@ const getProducts = asyncHandler(async (req, res) => {
       },
       { $match: { isLive: true } },
     ])
-    res.json({ products, page, pages: Math.ceil(products.count / pageSize) })
-  } else {
-    const count = await Product.count({}).where('isLive').equals(true)
 
-    const products = await Product.find({})
-      .where('isLive')
-      .equals(true)
-      .limit(pageSize)
-      .skip(pageSize * (page - 1))
-    res.json({ products, page, pages: Math.ceil(count / pageSize) })
+    const count = products.length
+    const start = pageSize * (page - 1)
+    const end = start + pageSize
+    const slicedArray = products.slice(start, end)
+    res.json({ products: slicedArray, page, pages: Math.ceil(count / pageSize) })
+  } else {
+    const products = await Product.find({}).where('isLive').equals(true)
+
+    const count = products.length
+    const start = pageSize * (page - 1)
+    const end = start + pageSize
+    const slicedArray = products.slice(start, end)
+    res.json({ products: slicedArray, page, pages: Math.ceil(count / pageSize) })
   }
 })
 
@@ -46,18 +51,21 @@ const getProductsAdmin = asyncHandler(async (req, res) => {
   const pageSize = 20
   const page = Number(req.query.pageNumber) || 1
 
-  const count = await Product.count({})
   const products = await Product.find({})
-    .limit(pageSize)
-    .skip(pageSize * (page - 1))
-  res.json({ products, page, pages: Math.ceil(count / pageSize) })
+
+  const count = products.length
+  const start = pageSize * (page - 1)
+  const end = start + pageSize
+  const slicedArray = products.slice(start, end)
+
+  res.json({ products: slicedArray, page, pages: Math.ceil(count / pageSize) })
 })
 
 //@desc     Get Products with the applied filter
 //@route    GET /api/products/filter
 //@access   Public
 const getFilteredProducts = asyncHandler(async (req, res) => {
-  const pageSize = 8
+  const pageSize = 6
   const page = Number(req.query.pageNumber) || 1
   var filters = JSON.parse(req.query.filters)
   var category = filters.category
@@ -88,7 +96,14 @@ const getFilteredProducts = asyncHandler(async (req, res) => {
       { countInStock: { $gte: minStock } },
     ],
   })
-  res.json({ products, page, pages: Math.ceil(products.count / pageSize) })
+    .where('isLive')
+    .equals(true)
+
+  const count = products.length
+  const start = pageSize * (page - 1)
+  const end = start + pageSize
+  const slicedArray = products.slice(start, end)
+  res.json({ products: slicedArray, page, pages: Math.ceil(count / pageSize) })
 })
 
 //@desc     Fetch single product if live

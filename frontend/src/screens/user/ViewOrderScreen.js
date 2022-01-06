@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Row, Col, ListGroup, Image, Form, Card } from 'react-bootstrap'
+import { Row, Col, ListGroup, Image, Card, Form } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { getOrderDetails, updateDeliveryStatus } from '../../actions/orderActions'
 import Message from '../../components/HelperComonents/Message'
@@ -63,6 +63,7 @@ const ViewOrderScreen = () => {
   const addDecimals = (num) => {
     return (Math.round(num * 100) / 100).toFixed(2)
   }
+
   const statusHandler = (e) => {
     order.deliveryStatus = e.target.value
     dispatch(updateDeliveryStatus(order))
@@ -217,6 +218,18 @@ const ViewOrderScreen = () => {
                   </ListGroup.Item>
                 </ListGroup>
               </Card>
+              {userInfo &&
+                userInfo.isAdmin &&
+                order.deliveryStatus !== 'Delivered' && (
+                  <Form.Select
+                    onChange={statusHandler}
+                    value={order.deliveryStatus}
+                  >
+                    <option value='Proccessing'>Proccessing</option>
+                    <option value='Shipped'>Shipped</option>
+                    <option value='Delivered'>Delivered</option>
+                  </Form.Select>
+                )}
             </Col>
           </Row>
         </>
