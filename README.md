@@ -28,3 +28,5 @@ Paypal Sandbox Account:
 sb-qget610533639@personal.example.com
 9eI+^-#K
 ```
+# Live Version
+https://chips-electronics.herokuapp.com/
