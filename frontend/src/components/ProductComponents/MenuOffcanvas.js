@@ -11,27 +11,42 @@ const MenuOffcanvas = (props) => {
       <Offcanvas.Body>
         <div className='menu-links'>
           <p>
-            <Link to='/component?c=Processors' onClick={props.onHide}>
+            <Link
+              to='/component?c=Processors&brand=&filter1=&filter2=&filter3=&filter4=&filter5=&minStock=0'
+              onClick={props.onHide}
+            >
               Processors
             </Link>
           </p>
           <p>
-            <Link to='/component?c=Memory' onClick={props.onHide}>
+            <Link
+              to='/component?c=Memory&brand=&filter1=&filter2=&filter3=&filter4=&filter5=&minStock=0'
+              onClick={props.onHide}
+            >
               Memory
             </Link>
           </p>
           <p>
-            <Link to='/component?c=Motherboards' onClick={props.onHide}>
+            <Link
+              to='/component?c=Motherboards&brand=&filter1=&filter2=&filter3=&filter4=&filter5=&minStock=0'
+              onClick={props.onHide}
+            >
               Motherboards
             </Link>
           </p>
           <p>
-            <Link to='/component?c=Video Cards' onClick={props.onHide}>
+            <Link
+              to='/component?c=Video Cards&brand=&filter1=&filter2=&filter3=&filter4=&filter5=&minStock=0'
+              onClick={props.onHide}
+            >
               Video Cards
             </Link>
           </p>
           <p>
-            <Link to='/component?c=Storage' onClick={props.onHide}>
+            <Link
+              to='/component?c=Storage&brand=&filter1=&filter2=&filter3=&filter4=&filter5=&minStock=0'
+              onClick={props.onHide}
+            >
               Storage
             </Link>
           </p>

@@ -30,12 +30,12 @@ import {
 } from '../constants/productConstants'
 
 export const listProducts =
-  (optionalRoute = '', keyword = '', pageNumber = '') =>
+  (keyword = '', pageNumber = '', liveOnly = true) =>
   async (dispatch) => {
     try {
       dispatch({ type: PRODUCT_LIST_REQUEST })
       const { data } = await axios.get(
-        `/api/products/${optionalRoute}/?keyword=${keyword}&pageNumber=${pageNumber}`
+        `/api/products/?keyword=${keyword}&pageNumber=${pageNumber}&liveOnly=${liveOnly}`
       )
 
       dispatch({

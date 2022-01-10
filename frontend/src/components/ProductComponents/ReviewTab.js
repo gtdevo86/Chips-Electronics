@@ -49,7 +49,7 @@ const ReviewTab = (props) => {
       {product.reviews.length === 0 && <Message>No Reviews</Message>}
       <ListGroup variant='flush'>
         {product.index > -1 && (
-          <ListGroup.Item key={product.reviews[product.index]._id}>
+          <ListGroup.Item>
             <strong>
               <p>My Review:</p>
               {product.reviews[product.index].name}{' '}
@@ -66,7 +66,7 @@ const ReviewTab = (props) => {
           </ListGroup.Item>
         )}
         {product.reviews.map((review) => (
-          <>
+          <React.Fragment key={review._id}>
             {userInfo && userInfo._id !== review.user && (
               <ListGroup.Item key={review._id}>
                 <strong>{review.name}</strong>
@@ -83,7 +83,7 @@ const ReviewTab = (props) => {
                 <p>{review.comment}</p>
               </ListGroup.Item>
             )}
-          </>
+          </React.Fragment>
         ))}
         {product.index === -1 && (
           <ListGroup.Item>

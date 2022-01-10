@@ -43,7 +43,7 @@ const ProductListScreen = () => {
     if (!userInfo.isAdmin) {
       navigate('/login')
     }
-    dispatch(listProducts('admin', '', pageNumber))
+    dispatch(listProducts('', pageNumber, false))
   }, [dispatch, navigate, userInfo, successDelete, pageNumber])
 
   const deleteHandler = (id) => {

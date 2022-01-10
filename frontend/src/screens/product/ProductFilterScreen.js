@@ -9,7 +9,7 @@ import Paginate from '../../components/HelperComonents/Paginate'
 import queryString from 'query-string'
 import filters from '../../helpers/filterModel'
 
-const HomeScreen = () => {
+const ProductFilterScreen = () => {
   document.title = 'Welcome to Chips Electronics'
   var checkIndex = 0
   const dispatch = useDispatch()
@@ -19,10 +19,8 @@ const HomeScreen = () => {
   const component = parsed.c
   const pageNumber = parsed.page || 1
   const tempArray = Array(50).fill(false)
-
   const productListFiltered = useSelector((state) => state.productListFiltered)
   const { loading, error, products, page, pages } = productListFiltered
-
   const [brand, setBrand] = useState('') //0
   const [showOnlyInStock, setShowOnlyInStock] = useState(false)
   const [filter1, setFilter1] = useState('') //1
@@ -30,40 +28,71 @@ const HomeScreen = () => {
   const [filter3, setFilter3] = useState('') //3
   const [filter4, setFilter4] = useState('') //4
   const [filter5, setFilter5] = useState('') //5
-
   const [arrayCheck, setArrayCheck] = useState(tempArray)
-  //if (!component) navigate('/')
+  const pBrand = parsed.brand || ''
+  const pFilter1 = parsed.filter1 || ''
+  const pFilter2 = parsed.filter2 || ''
+  const pFilter3 = parsed.filter3 || ''
+  const pFilter4 = parsed.filter4 || ''
+  const pFilter5 = parsed.filter5 || ''
+  const pMinStock = parsed.minStock || ''
+  const checksFromStorage = localStorage['filters']
+  const componentfromStorage = localStorage['filterPage']
 
   useEffect(() => {
-    let items = arrayCheck
-    for (let x = 0; x < arrayCheck.length; x++) {
-      items[x] = false
+    if (checksFromStorage) {
+      var checksFromStorageSplit = checksFromStorage.split(',')
+      for (var x = 0; x < checksFromStorageSplit.length; x++) {
+        if (componentfromStorage === component) {
+          if (checksFromStorageSplit[x] === 'true') checksFromStorageSplit[x] = true
+          else checksFromStorageSplit[x] = false
+        } else {
+          checksFromStorageSplit[x] = false
+        }
+      }
+      if (componentfromStorage !== component) {
+        localStorage['filters'] = ''
+        setBrand('')
+        setFilter1('')
+        setFilter2('')
+        setFilter3('')
+        setFilter4('')
+        setFilter5('')
+        setShowOnlyInStock(false)
+      }
+
+      setArrayCheck(checksFromStorageSplit)
     }
-    setArrayCheck(items)
-    setBrand('')
-    setFilter1('')
-    setFilter2('')
-    setFilter3('')
-    setFilter4('')
-    setFilter5('')
-    setShowOnlyInStock(false)
 
     dispatch(
       filterProducts(
         {
           category: component,
-          brand: '',
-          filter1: '',
-          filter2: '',
-          filter3: '',
-          filter4: '',
-          filter5: '',
-          minStock: 0,
+          brand: pBrand,
+          filter1: pFilter1,
+          filter2: pFilter2,
+          filter3: pFilter3,
+          filter4: pFilter4,
+          filter5: pFilter5,
+          minStock: pMinStock,
         },
         pageNumber
       )
     )
-  }, [dispatch, component, pageNumber, arrayCheck])
+  }, [
+    dispatch,
+    component,
+    pageNumber,
+    pBrand,
+    pFilter1,
+    pFilter2,
+    pFilter3,
+    pFilter4,
+    pFilter5,
+    pMinStock,
+    checksFromStorage,
+    componentfromStorage,
+  ])
 
   const getFilterArray = () => {
     if (component === 'Processors') return filters[0]
@@ -76,20 +105,14 @@ const HomeScreen = () => {
   const pageFilterArray = getFilterArray()
 
   const filterHandler = async (e) => {
-    dispatch(
-      filterProducts(
-        {
-          category: component,
-          brand: brand,
-          filter1: filter1,
-          filter2: filter2,
-          filter3: filter3,
-          filter4: filter4,
-          filter5: filter5,
-          minStock: showOnlyInStock ? 1 : 0,
-        },
-        pageNumber
-      )
+    localStorage.setItem('filterPage', component)
+    localStorage['filters'] = arrayCheck
+    navigate(
+      `/component?c=${
+        parsed.c
+      }&brand=${brand}&filter1=${filter1}&filter2=${filter2}&filter3=${filter3}&filter4=${filter4}&filter5=${filter5}&minStock=${
+        showOnlyInStock ? 1 : 0
+      }`
     )
   }
 
@@ -207,13 +230,13 @@ const HomeScreen = () => {
                   </Col>
                 ))}
               </Row>
+              <Paginate pages={pages} page={page} />
             </Col>
           </Row>
-          <Paginate pages={pages} page={page} keyword={'ADD FILTER'} />
         </>
       )}
     </>
   )
 }
 
-export default HomeScreen
+export default ProductFilterScreen
