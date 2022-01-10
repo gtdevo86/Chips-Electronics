@@ -80,7 +80,7 @@ const ProductScreen = () => {
                   <h3>{product.name}</h3>
                   Brand: {product.brand}
                   <Rating
-                    value={product.rating}
+                    value={product.rating || 0}
                     text={`(${product.numReviews})`}
                     className='py-3'
                   />

@@ -1,5 +1,5 @@
 import { useLayoutEffect, useState } from 'react'
-import { Router } from 'react-router-dom'
+import { BrowserRouter, Router } from 'react-router-dom'
 
 const CustomRouter = ({ history, ...props }) => {
   const [state, setState] = useState({
@@ -10,7 +10,7 @@ const CustomRouter = ({ history, ...props }) => {
   useLayoutEffect(() => history.listen(setState), [history])
 
   return (
-    <Router
+    <BrowserRouter
       {...props}
       location={state.location}
       navigationType={state.action}

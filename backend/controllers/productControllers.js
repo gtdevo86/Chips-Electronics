@@ -4,16 +4,19 @@ import mongoose from 'mongoose'
 import fs from 'fs'
 import path from 'path'
 import products from '../data/products.js'
-//@desc     Fetch live products
+
+//@desc     Fetch products
 //@route    GET /api/products
 //@access   Public
 const getProducts = asyncHandler(async (req, res) => {
+  let liveOnly = true
+  if (req.user && req.user.isAdmin && !req.query.liveOnly) liveOnly = false
   const pageSize = 8
   const page = Number(req.query.pageNumber) || 1
   const keywords = req.query.keyword
-
+  let products = []
   if (keywords) {
-    const products = await Product.aggregate([
+    products = await Product.aggregate([
       {
         $search: {
           index: 'default',
@@ -27,37 +30,15 @@ const getProducts = asyncHandler(async (req, res) => {
       },
       { $match: { isLive: true } },
     ])
-
-    const count = products.length
-    const start = pageSize * (page - 1)
-    const end = start + pageSize
-    const slicedArray = products.slice(start, end)
-    res.json({ products: slicedArray, page, pages: Math.ceil(count / pageSize) })
+  } else if (liveOnly) {
+    products = await Product.find({}).where('isLive').equals(true)
   } else {
-    const products = await Product.find({}).where('isLive').equals(true)
-
-    const count = products.length
-    const start = pageSize * (page - 1)
-    const end = start + pageSize
-    const slicedArray = products.slice(start, end)
-    res.json({ products: slicedArray, page, pages: Math.ceil(count / pageSize) })
+    const products = await Product.find({})
   }
-})
-
-//@desc     Fetch all products
-//@route    GET /api/products/admin
-//@access   Private/Admin
-const getProductsAdmin = asyncHandler(async (req, res) => {
-  const pageSize = 20
-  const page = Number(req.query.pageNumber) || 1
-
-  const products = await Product.find({})
-
   const count = products.length
   const start = pageSize * (page - 1)
   const end = start + pageSize
   const slicedArray = products.slice(start, end)
-
   res.json({ products: slicedArray, page, pages: Math.ceil(count / pageSize) })
 })
 
@@ -65,7 +46,7 @@ const getProductsAdmin = asyncHandler(async (req, res) => {
 //@route    GET /api/products/filter
 //@access   Public
 const getFilteredProducts = asyncHandler(async (req, res) => {
-  const pageSize = 6
+  const pageSize = 8
   const page = Number(req.query.pageNumber) || 1
   var filters = JSON.parse(req.query.filters)
   var category = filters.category
@@ -96,9 +77,6 @@ const getFilteredProducts = asyncHandler(async (req, res) => {
       { countInStock: { $gte: minStock } },
     ],
   })
-    .where('isLive')
-    .equals(true)
-
   const count = products.length
   const start = pageSize * (page - 1)
   const end = start + pageSize
@@ -106,92 +84,45 @@ const getFilteredProducts = asyncHandler(async (req, res) => {
   res.json({ products: slicedArray, page, pages: Math.ceil(count / pageSize) })
 })
 
-//@desc     Fetch single product if live
+//@desc     Fetch single product
 //@route    GET /api/products/:id
 //@access   Public
 const getProductById = asyncHandler(async (req, res) => {
   if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-    const product = await Product.findById(req.params.id)
-    if (product.isLive) {
-      res.json({
-        _id: product._id,
-        name: product.name,
-        price: product.price,
-        user: product.user,
-        image: product.image,
-        brand: product.brand,
-        rating: product.rating,
-        category: product.category,
-        countInStock: product.countInStock,
-        numReviews: product.numReviews,
-        description: product.description,
-        isLive: product.isLive,
-        index: -1,
-        reviews: product.reviews,
-        filter1: product.filter1,
-        filter2: product.filter2,
-        filter3: product.filter3,
-        filter4: product.filter4,
-        filter5: product.filter5,
-      })
-    } else {
-      res.status(404)
-      throw new Error('Product not found')
+    let liveOnly = true
+    if (req.user && req.user.isAdmin && !req.query.liveOnly) liveOnly = false
+    let product = []
+    if (liveOnly)
+      product = await Product.findById(req.params.id).where('isLive').equals(true)
+    product = await Product.findById(req.params.id)
+    let reviewIndex = -1
+    if (req.user) {
+      reviewIndex = product.reviews.findIndex(
+        (r) => r.user.toString() === req.user._id.toString()
+      )
     }
-  } else {
-    res.status(404)
-    throw new Error('Product not found')
-  }
-})
-
-//@desc     Fetch single product with token
-//@route    GET /api/products/:id/loggedIn
-//@access   Private
-const getProductByIdLoggedin = asyncHandler(async (req, res) => {
-  if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-    const product = await Product.findById(req.params.id)
-    if (product.isLive) {
-      res.json({
-        _id: product._id,
-        name: product.name,
-        price: product.price,
-        user: product.user,
-        image: product.image,
-        brand: product.brand,
-        rating: product.rating,
-        category: product.category,
-        countInStock: product.countInStock,
-        numReviews: product.numReviews,
-        description: product.description,
-        isLive: product.isLive,
-        filter1: product.filter1,
-        filter2: product.filter2,
-        filter3: product.filter3,
-        filter4: product.filter4,
-        filter5: product.filter5,
-        index: product.reviews.findIndex(
-          (r) => r.user.toString() === req.user._id.toString()
-        ),
-        reviews: product.reviews,
-      })
-    } else {
-      res.status(404)
-      throw new Error('Product not found')
-    }
-  } else {
-    res.status(404)
-    throw new Error('Product not found')
-  }
-})
-
-//@desc     Fetch single product for admin
-//@route    GET /api/products/:id/admin
-//@access   Private/Admin
-const getProductByIdAdmin = asyncHandler(async (req, res) => {
-  if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-    const product = await Product.findById(req.params.id)
     if (product) {
-      res.json(product)
+      res.json({
+        _id: product._id,
+        name: product.name,
+        price: product.price,
+        user: product.user,
+        image: product.image,
+        brand: product.brand,
+        rating: product.rating,
+        category: product.category,
+        countInStock: product.countInStock,
+        numReviews: product.numReviews,
+        description: product.description,
+        isLive: product.isLive,
+        index: reviewIndex,
+        reviews: product.reviews,
+        filter1: product.filter1,
+        filter2: product.filter2,
+        filter3: product.filter3,
+        filter4: product.filter4,
+        filter5: product.filter5,
+      })
     } else {
       res.status(404)
       throw new Error('Product not found')
@@ -412,15 +343,12 @@ const getTopProducts = asyncHandler(async (req, res) => {
 
 export {
   getProducts,
-  getProductsAdmin,
   getProductById,
-  getProductByIdAdmin,
   deleteProduct,
   createProduct,
   updateProduct,
   purgeImages,
   reviewProduct,
-  getProductByIdLoggedin,
   editReview,
   getTopProducts,
   getFilteredProducts,

@@ -8,10 +8,12 @@ import history from './helpers/customHistory'
 import AdminRoutes from './routes/AdminRoutes'
 import UserRoutes from './routes/UserRoutes'
 import ProductOrderRoutes from './routes/ProductOrderRoutes'
+import { Route, Routes } from 'react-router-dom'
 
 const App = () => {
   const [backgroundColor, setBackgroundColor] = useState('white')
   const { fullPath } = useSelector((state) => state.url)
+  var routesArray = AdminRoutes.concat(ProductOrderRoutes).concat(UserRoutes)
 
   const whiteRegexArray = useMemo(
     () => [
@@ -43,9 +45,11 @@ const App = () => {
       <div style={{ background: backgroundColor }}>
         <main className='py-3'>
           <Container>
-            <AdminRoutes />
-            <UserRoutes />
-            <ProductOrderRoutes />
+            <Routes>
+              {routesArray.map((route, i) => (
+                <Route key={i} path={route.path} element={route.element} />
+              ))}
+            </Routes>
           </Container>
         </main>
       </div>

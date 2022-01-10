@@ -21,7 +21,7 @@ const HomeScreen = () => {
   const { loading, error, products, page, pages } = productList
 
   useEffect(() => {
-    dispatch(listProducts('', keyword, pageNumber))
+    dispatch(listProducts(keyword, pageNumber))
   }, [dispatch, keyword, pageNumber])
 
   return (
