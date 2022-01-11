@@ -161,9 +161,14 @@ const deleteUser = asyncHandler(async (req, res) => {
 // @route   GET /api/users/:ID
 // @access  Private/Admin
 const getUserById = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id).select('-password')
-  if (user) {
-    res.json(user)
+  if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+    const user = await User.findById(req.params.id).select('-password')
+    if (user) {
+      res.json(user)
+    } else {
+      res.status(404)
+      throw new Error('User not found')
+    }
   } else {
     res.status(404)
     throw new Error('User not found')

@@ -52,7 +52,10 @@ const getOrderById = asyncHandler(async (req, res) => {
       'firstName lastName email'
     )
     if (order) {
-      if (order.user._id.equals(req.user._id) || req.user.isAdmin) {
+      if (!order.user) {
+        order.user = 'No User'
+        res.json(order)
+      } else if (order.user._id.equals(req.user._id) || req.user.isAdmin) {
         res.json(order)
       } else {
         res.status(401)
