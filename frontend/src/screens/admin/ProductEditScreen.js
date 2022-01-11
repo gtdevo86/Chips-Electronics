@@ -58,7 +58,7 @@ const ProductEditScreen = () => {
         dispatch({ type: PRODUCT_UPDATE_RESET })
         navigate('/admin/productlist')
       } else if (!error) {
-        if (!product.name || product._id !== productId) {
+        if (!product.name) {
           dispatch(listProductDetails(productId, false))
         } else {
           setName(product.name)
