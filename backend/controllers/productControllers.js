@@ -3,14 +3,14 @@ import Product from '../models/productModel.js'
 import mongoose from 'mongoose'
 import fs from 'fs'
 import path from 'path'
-import products from '../data/products.js'
 
 //@desc     Fetch products
 //@route    GET /api/products
 //@access   Public
 const getProducts = asyncHandler(async (req, res) => {
   let liveOnly = true
-  if (req.user && req.user.isAdmin && !req.query.liveOnly) liveOnly = false
+  if (req.user && req.user.isAdmin && req.query.liveOnly === 'false')
+    liveOnly = false
   const pageSize = 8
   const page = Number(req.query.pageNumber) || 1
   const keywords = req.query.keyword
@@ -33,7 +33,7 @@ const getProducts = asyncHandler(async (req, res) => {
   } else if (liveOnly) {
     products = await Product.find({}).where('isLive').equals(true)
   } else {
-    const products = await Product.find({})
+    products = await Product.find({})
   }
   const count = products.length
   const start = pageSize * (page - 1)
@@ -90,18 +90,20 @@ const getFilteredProducts = asyncHandler(async (req, res) => {
 const getProductById = asyncHandler(async (req, res) => {
   if (mongoose.Types.ObjectId.isValid(req.params.id)) {
     let liveOnly = true
-    if (req.user && req.user.isAdmin && !req.query.liveOnly) liveOnly = false
+    if (req.user && req.user.isAdmin && req.query.liveOnly === 'false')
+      liveOnly = false
     let product = []
     if (liveOnly)
       product = await Product.findById(req.params.id).where('isLive').equals(true)
     product = await Product.findById(req.params.id)
-    let reviewIndex = -1
-    if (req.user) {
-      reviewIndex = product.reviews.findIndex(
-        (r) => r.user.toString() === req.user._id.toString()
-      )
-    }
+
     if (product) {
+      let reviewIndex = -1
+      if (req.user) {
+        reviewIndex = product.reviews.findIndex(
+          (r) => r.user.toString() === req.user._id.toString()
+        )
+      }
       res.json({
         _id: product._id,
         name: product.name,

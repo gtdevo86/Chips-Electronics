@@ -79,12 +79,12 @@ export const filterProducts =
     }
   }
 export const listProductDetails =
-  (id, optionalRoute = '') =>
+  (id, liveOnly = true) =>
   async (dispatch) => {
     try {
       dispatch({ type: PRODUCT_DETAILS_REQUEST })
 
-      const { data } = await axios.get(`/api/products/${id}/${optionalRoute}`)
+      const { data } = await axios.get(`/api/products/${id}?liveOnly=${liveOnly}`)
 
       dispatch({
         type: PRODUCT_DETAILS_SUCCESS,

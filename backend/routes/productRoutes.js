@@ -11,13 +11,15 @@ import {
   reviewProduct,
   updateProduct,
 } from '../controllers/productControllers.js'
-import { protect, admin } from '../middleware/authMiddleware.js'
+import { protect, admin, protectOptional } from '../middleware/authMiddleware.js'
 
 const router = express.Router()
 
-router.route('/').get(getProducts).post(protect, admin, createProduct)
+router
+  .route('/')
+  .get(protectOptional, getProducts)
+  .post(protect, admin, createProduct)
 router.route('/filter').get(getFilteredProducts)
-//router.route('/all').get(protect, admin, getAllProducts)
 router.route('/top').get(getTopProducts)
 router
   .route('/:id')
