@@ -45,12 +45,10 @@ const ProductScreen = () => {
   }, [dispatch])
 
   useEffect(() => {
-    if (!product.name && !loading) {
-      let extraparam = ''
-      if (userInfo) extraparam = 'loggedIn'
-      dispatch(listProductDetails(params.id, extraparam))
+    if (!error && !product._id) {
+      dispatch(listProductDetails(params.id))
     }
-  }, [dispatch, params, product, userInfo, loading])
+  }, [dispatch, params, product, error])
 
   const addToCartHandler = () => {
     navigate(`/cart/${params.id}?qty=${qty}`)

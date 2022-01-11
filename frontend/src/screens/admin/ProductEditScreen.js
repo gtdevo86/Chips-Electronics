@@ -6,7 +6,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import Message from '../../components/HelperComonents/Message'
 import FormContainer from '../../components/HelperComonents/FormContainer'
 import { listProductDetails, updateProduct } from '../../actions/productActions'
-import { PRODUCT_UPDATE_RESET } from '../../constants/productConstants'
+import {
+  PRODUCT_DETAILS_RESET,
+  PRODUCT_UPDATE_RESET,
+} from '../../constants/productConstants'
 
 const ProductEditScreen = () => {
   document.title = 'Edit Product'
@@ -46,36 +49,42 @@ const ProductEditScreen = () => {
   const { error: errorUpdate, success: successUpdate } = productUpdate
 
   useEffect(() => {
+    dispatch({ type: PRODUCT_DETAILS_RESET })
+  }, [dispatch])
+
+  useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
       if (successUpdate) {
         dispatch({ type: PRODUCT_UPDATE_RESET })
         navigate('/admin/productlist')
-      } else if (!product.name || product._id !== productId) {
-        dispatch(listProductDetails(productId, 'admin'))
-      } else {
-        setName(product.name)
-        setPrice(product.price)
-        setImage(product.image)
-        setBrand(product.brand)
-        setCategory(product.category)
-        setCountInStock(product.countInStock)
-        setDescription(product.description)
-        setIsLive(product.isLive)
-        setFilter1Name(product.filter1.name)
-        setFilter1Value(product.filter1.value)
-        setFilter2Name(product.filter2.name)
-        setFilter2Value(product.filter2.value)
-        setFilter3Name(product.filter3.name)
-        setFilter3Value(product.filter3.value)
-        setFilter4Name(product.filter4.name)
-        setFilter4Value(product.filter4.value)
-        setFilter5Name(product.filter5.name)
-        setFilter5Value(product.filter5.value)
+      } else if (!error) {
+        if (!product.name || product._id !== productId) {
+          dispatch(listProductDetails(productId, false))
+        } else {
+          setName(product.name)
+          setPrice(product.price)
+          setImage(product.image)
+          setBrand(product.brand)
+          setCategory(product.category)
+          setCountInStock(product.countInStock)
+          setDescription(product.description)
+          setIsLive(product.isLive)
+          setFilter1Name(product.filter1.name)
+          setFilter1Value(product.filter1.value)
+          setFilter2Name(product.filter2.name)
+          setFilter2Value(product.filter2.value)
+          setFilter3Name(product.filter3.name)
+          setFilter3Value(product.filter3.value)
+          setFilter4Name(product.filter4.name)
+          setFilter4Value(product.filter4.value)
+          setFilter5Name(product.filter5.name)
+          setFilter5Value(product.filter5.value)
+        }
       }
     } else {
       navigate('/login')
     }
-  }, [dispatch, navigate, productId, userInfo, product, successUpdate])
+  }, [dispatch, navigate, productId, userInfo, product, successUpdate, error])
 
   const uploadFileHandler = async (e) => {
     const file = e.target.files[0]
@@ -186,7 +195,6 @@ const ProductEditScreen = () => {
                       <Form.Control
                         type='file'
                         name='foo'
-                        custom
                         accept='image/*'
                         onChange={uploadFileHandler}
                       ></Form.Control>
