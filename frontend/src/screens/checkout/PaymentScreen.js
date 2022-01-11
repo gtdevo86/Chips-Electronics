@@ -74,6 +74,7 @@ const PaymentScreen = () => {
                     id='Stripe'
                     name='paymentMethod'
                     value='Stripe'
+                    disabled
                     onChange={(e) => setPaymentMethod(e.target.value)}
                   ></Form.Check>
                 </ListGroup.Item>
