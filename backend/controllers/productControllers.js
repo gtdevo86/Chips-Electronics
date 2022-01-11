@@ -42,7 +42,7 @@ const getProducts = asyncHandler(async (req, res) => {
   res.json({ products: slicedArray, page, pages: Math.ceil(count / pageSize) })
 })
 
-//@desc     Get Products with the applied filter
+//@desc     Get Products with the applied filters
 //@route    GET /api/products/filter
 //@access   Public
 const getFilteredProducts = asyncHandler(async (req, res) => {
@@ -50,13 +50,13 @@ const getFilteredProducts = asyncHandler(async (req, res) => {
   const page = Number(req.query.pageNumber) || 1
   var filters = JSON.parse(req.query.filters)
   var category = filters.category
-  var brand = filters.brand?.split(',')
-  var filter1 = filters.filter1?.split(',') || '*'
-  var filter2 = filters.filter2?.split(',') || '*'
-  var filter3 = filters.filter3?.split(',') || '*'
-  var filter4 = filters.filter4?.split(',') || '*'
-  var filter5 = filters.filter5?.split(',') || '*'
-  var minStock = filters.minStock
+  var brand = filters.brand?.split(',') || [/|/]
+  var filter1 = filters.filter1?.split(',') || [/|/]
+  var filter2 = filters.filter2?.split(',') || [/|/]
+  var filter3 = filters.filter3?.split(',') || [/|/]
+  var filter4 = filters.filter4?.split(',') || [/|/]
+  var filter5 = filters.filter5?.split(',') || [/|/]
+  var minStock = filters.minStock || 0
 
   if (!brand[0]) brand = [/|/]
   if (!filter1[0]) filter1 = [/|/]
@@ -77,6 +77,8 @@ const getFilteredProducts = asyncHandler(async (req, res) => {
       { countInStock: { $gte: minStock } },
     ],
   })
+    .where('isLive')
+    .equals(true)
   const count = products.length
   const start = pageSize * (page - 1)
   const end = start + pageSize
