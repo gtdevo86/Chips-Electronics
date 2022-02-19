@@ -26,6 +26,7 @@ const ProductCreateScreen = () => {
   const { product, error: errorCreate, success: successCreate } = productCreate
 
   useEffect(() => {
+    if (errorCreate === 'Not authorized, no token') navigate('/logout')
     if (userInfo && userInfo.isAdmin) {
       if (successCreate) {
         navigate(`/admin/product/${product._id}/edit`)
@@ -33,7 +34,7 @@ const ProductCreateScreen = () => {
     } else {
       navigate('/login')
     }
-  }, [navigate, userInfo, successCreate, product])
+  }, [navigate, userInfo, successCreate, product, errorCreate])
 
   const submitHandler = async (e) => {
     e.preventDefault()

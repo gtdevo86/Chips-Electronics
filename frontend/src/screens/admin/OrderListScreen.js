@@ -18,12 +18,13 @@ const OrderListScreen = () => {
   const { userInfo } = userLogin
 
   useEffect(() => {
+    if (error === 'Not authorized, no token') navigate('/logout')
     if (userInfo && userInfo.isAdmin) {
       dispatch(listOrders())
     } else {
       navigate('/login')
     }
-  }, [dispatch, navigate, userInfo])
+  }, [dispatch, navigate, userInfo, error])
 
   const addDecimals = (num) => {
     return (Math.round(num * 100) / 100).toFixed(2)

@@ -3,12 +3,10 @@ import { useSelector } from 'react-redux'
 import { Container } from 'react-bootstrap'
 import Header from './components/Header'
 import Footer from './components/Footer'
-import CustomRouter from './helpers/CustomRouter'
-import history from './helpers/customHistory'
 import AdminRoutes from './routes/AdminRoutes'
 import UserRoutes from './routes/UserRoutes'
 import ProductOrderRoutes from './routes/ProductOrderRoutes'
-import { Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 const App = () => {
   const [backgroundColor, setBackgroundColor] = useState('white')
@@ -40,7 +38,7 @@ const App = () => {
   }, [fullPath, whiteRegexArray])
 
   return (
-    <CustomRouter history={history}>
+    <BrowserRouter>
       <Header />
       <div style={{ background: backgroundColor }}>
         <main className='py-3'>
@@ -54,7 +52,7 @@ const App = () => {
         </main>
       </div>
       <Footer />
-    </CustomRouter>
+    </BrowserRouter>
   )
 }
 

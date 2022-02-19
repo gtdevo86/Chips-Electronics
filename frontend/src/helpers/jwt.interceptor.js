@@ -1,30 +1,17 @@
 import axios from 'axios'
-import history from '../helpers/customHistory'
 import { store } from '../store'
 
 export function jwtInterceptor() {
   axios.interceptors.request.use(
     (request) => {
       const userInfo = store.getState().userLogin.userInfo
-      if (userInfo?.token) {
-        if (isTokenExpired(userInfo?.token)) {
-          history.replace('/logout')
-        } else {
-          request.headers.common.Authorization = `Bearer ${userInfo.token}`
-          request.headers['Content-Type'] = 'application/json'
-        }
+      if (userInfo?.token && !isTokenExpired(userInfo?.token)) {
+        request.headers.common.Authorization = `Bearer ${userInfo.token}`
+        request.headers['Content-Type'] = 'application/json'
       }
       return request
     },
-    (error) => {
-      const message =
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
-      if (message === 'Not authorized, token failed') {
-        history.replace('/logout')
-      }
-    }
+    (error) => {}
   )
 }
 
