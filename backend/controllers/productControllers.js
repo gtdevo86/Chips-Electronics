@@ -337,7 +337,7 @@ const purgeImages = asyncHandler(async (req, res) => {
 //@route    POST /api/products/top
 //@access   Public
 const getTopProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({})
+  const products = await Product.find({ countInStock: { $gt: 0 } })
     .where('isLive')
     .equals(true)
     .sort({ rating: -1 })

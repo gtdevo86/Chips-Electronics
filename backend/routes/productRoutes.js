@@ -23,7 +23,7 @@ router.route('/filter').get(getFilteredProducts)
 router.route('/top').get(getTopProducts)
 router
   .route('/:id')
-  .get(getProductById)
+  .get(protectOptional, getProductById)
   .delete(protect, admin, deleteProduct)
   .put(protect, admin, updateProduct)
 router.route('/:id/purgeImages').delete(protect, admin, purgeImages)
