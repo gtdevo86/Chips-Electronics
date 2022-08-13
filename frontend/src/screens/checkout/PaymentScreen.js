@@ -13,13 +13,14 @@ const PaymentScreen = () => {
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
-
+  const [paymentMethod, setPaymentMethod] = useState('')
+  /*
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [cardNumber, setCardNumber] = useState('')
-  const [paymentMethod, setPaymentMethod] = useState('')
   const [expDate, setExpDate] = useState('')
   const [cvv, setCVV] = useState('')
+  */
 
   const cart = useSelector((state) => state.cart)
   const { cartItems, error, paymentMethodSuccess } = cart
@@ -67,6 +68,7 @@ const PaymentScreen = () => {
             <Card className='px-3'>
               <ListGroup variant='flush'>
                 {error && <Message variant='danger'>{error}</Message>}
+                {/*
                 <ListGroup.Item>
                   <Form.Check
                     type='radio'
@@ -150,6 +152,8 @@ const PaymentScreen = () => {
                     </Row>
                   </ListGroup.Item>
                 )}
+                */}
+
                 <ListGroup.Item>
                   <Form.Check
                     type='radio'

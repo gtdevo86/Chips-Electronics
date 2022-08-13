@@ -1,9 +1,16 @@
 import React, { useState } from 'react'
-import { Button, Col, Form, ListGroup, Modal, Row } from 'react-bootstrap'
+import { Button, Form, ListGroup, Modal } from 'react-bootstrap'
+import { useDispatch } from 'react-redux'
+import { savePaymentMethod } from '../../actions/cartActions'
 
 const ShippingModal = (props) => {
-  const submitHandler = (e) => {}
+  const dispatch = useDispatch()
   const [paymentMethod, setPaymentMethod] = useState('Paypal')
+
+  const submitHandler = (e) => {
+    dispatch(savePaymentMethod(paymentMethod))
+  }
+
   return (
     <Modal {...props} aria-labelledby='contained-modal-title-vcenter' centered>
       <Modal.Header closeButton>
@@ -11,6 +18,7 @@ const ShippingModal = (props) => {
       </Modal.Header>
       <Modal.Body>
         <ListGroup variant='flush'>
+          {/*
           <ListGroup.Item>
             <Form.Check
               type='radio'
@@ -64,6 +72,7 @@ const ShippingModal = (props) => {
               </Row>
             </ListGroup.Item>
           )}
+          */}
           <ListGroup.Item>
             <Form.Check
               type='radio'
