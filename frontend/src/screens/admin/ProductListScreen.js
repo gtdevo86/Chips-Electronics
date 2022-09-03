@@ -3,7 +3,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { Table, Button, Row, Col } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../../components/HelperComonents/Message'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faTrash,
@@ -19,7 +19,6 @@ import queryString from 'query-string'
 
 const ProductListScreen = () => {
   document.title = 'Product List'
-  const navigate = useNavigate()
   const dispatch = useDispatch()
   const location = useLocation()
   const parsed = queryString.parse(location.search)
@@ -35,16 +34,10 @@ const ProductListScreen = () => {
     success: successDelete,
   } = productDelete
 
-  const userLogin = useSelector((state) => state.userLogin)
-  const { userInfo } = userLogin
-
   useEffect(() => {
     dispatch({ type: PRODUCT_CREATE_RESET })
-    if (!userInfo.isAdmin) {
-      navigate('/login')
-    }
     dispatch(listProducts('', pageNumber, false))
-  }, [dispatch, navigate, userInfo, successDelete, pageNumber])
+  }, [dispatch, pageNumber, successDelete])
 
   const deleteHandler = (id) => {
     if (window.confirm('Are you sure')) {

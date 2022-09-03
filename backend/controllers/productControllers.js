@@ -302,37 +302,6 @@ const editReview = asyncHandler(async (req, res) => {
   }
 })
 
-//@desc     Remove unused images from given product
-//@route    DELETE /api/products/:id/purgeImages
-//@access   Private/Admin
-const purgeImages = asyncHandler(async (req, res) => {
-  const product = await Product.findById(req.params.id)
-  const directory = `uploads/${req.params.id}`
-
-  fs.readdir(directory, (err, files) => {
-    if (err) res.json(err)
-    else {
-      try {
-        var trimmedImageNames = product.image.map(
-          (element) => element.split('\\')[2]
-        )
-        var filteredFiles = files.filter(function (e) {
-          return trimmedImageNames.indexOf(e) == -1
-        })
-
-        for (const file of filteredFiles) {
-          fs.unlink(path.join(directory, file), (err) => {
-            if (err) throw err
-          })
-        }
-        res.json({ message: 'Files Deleted' })
-      } catch (err) {
-        res.json(err)
-      }
-    }
-  })
-})
-
 //@desc     Get top rated products
 //@route    POST /api/products/top
 //@access   Public
@@ -351,7 +320,6 @@ export {
   deleteProduct,
   createProduct,
   updateProduct,
-  purgeImages,
   reviewProduct,
   editReview,
   getTopProducts,

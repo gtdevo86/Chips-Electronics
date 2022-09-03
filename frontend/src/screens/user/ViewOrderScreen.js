@@ -1,21 +1,20 @@
 import React, { useEffect } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { Row, Col, ListGroup, Image, Card, Form } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { getOrderDetails, updateDeliveryStatus } from '../../actions/orderActions'
 import Message from '../../components/HelperComonents/Message'
 import {
+  ORDER_CREATE_RESET,
   ORDER_DELIVERY_STATUS_RESET,
   ORDER_DETAILS_RESET,
 } from '../../constants/orderConstants'
 
 const ViewOrderScreen = () => {
   document.title = 'Order Details'
-
-  const navigate = useNavigate()
   const dispatch = useDispatch()
-  const params = useParams()
 
+  const params = useParams()
   const orderId = params.id
 
   const orderDetails = useSelector((state) => state.orderDetails)
@@ -28,12 +27,7 @@ const ViewOrderScreen = () => {
   const { success: successDeliver } = orderDeliveryStatus
 
   useEffect(() => {
-    if (!userInfo) {
-      navigate('/login')
-    }
-  }, [navigate, userInfo])
-
-  useEffect(() => {
+    dispatch({ type: ORDER_CREATE_RESET })
     dispatch({ type: ORDER_DETAILS_RESET })
   }, [dispatch])
 

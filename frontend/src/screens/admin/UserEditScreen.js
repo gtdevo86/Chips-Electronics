@@ -33,22 +33,18 @@ const UserEditScreen = () => {
   const { error: errorUpdate, success: successUpdate } = userUpdate
 
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
-      if (successUpdate) {
-        dispatch({ type: USER_UPDATE_RESET })
-        navigate('/admin/userlist')
-      } else {
-        if (!user.firstName || user._id !== userId) {
-          dispatch(getUserDetails(userId))
-        } else {
-          setFirstName(user.firstName)
-          setLastName(user.lastName)
-          setEmail(user.email)
-          setIsAdmin(user.isAdmin)
-        }
-      }
+    if (successUpdate) {
+      dispatch({ type: USER_UPDATE_RESET })
+      navigate('/admin/userlist')
     } else {
-      navigate('/login')
+      if (!user.firstName || user._id !== userId) {
+        dispatch(getUserDetails(userId))
+      } else {
+        setFirstName(user.firstName)
+        setLastName(user.lastName)
+        setEmail(user.email)
+        setIsAdmin(user.isAdmin)
+      }
     }
   }, [dispatch, navigate, userInfo, user, userId, successUpdate])
 

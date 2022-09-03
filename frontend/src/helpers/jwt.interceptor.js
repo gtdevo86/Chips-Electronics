@@ -15,7 +15,7 @@ export function jwtInterceptor() {
   )
 }
 
-function isTokenExpired(token) {
+export function isTokenExpired(token) {
   const base64Url = token.split('.')[1]
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
   const jsonPayload = decodeURIComponent(
@@ -28,6 +28,6 @@ function isTokenExpired(token) {
   )
   const data = JSON.parse(jsonPayload)
   const expirationDate = data.exp
-  const currentDate = new Date().getTime() / 1000
-  return currentDate >= expirationDate
+  const currentDate = Math.round(new Date().getTime() / 1000)
+  return currentDate > expirationDate
 }

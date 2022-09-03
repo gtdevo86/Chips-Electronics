@@ -19,22 +19,14 @@ const ProductCreateScreen = () => {
   const [countInStock, setCountInStock] = useState('')
   const [description, setDescription] = useState('')
 
-  const userLogin = useSelector((state) => state.userLogin)
-  const { userInfo } = userLogin
-
   const productCreate = useSelector((state) => state.productCreate)
   const { product, error: errorCreate, success: successCreate } = productCreate
 
   useEffect(() => {
-    if (errorCreate === 'Not authorized, no token') navigate('/logout')
-    if (userInfo && userInfo.isAdmin) {
-      if (successCreate) {
-        navigate(`/admin/product/${product._id}/edit`)
-      }
-    } else {
-      navigate('/login')
+    if (successCreate) {
+      navigate(`/admin/product/${product._id}/edit`)
     }
-  }, [navigate, userInfo, successCreate, product, errorCreate])
+  }, [navigate, successCreate, product])
 
   const submitHandler = async (e) => {
     e.preventDefault()

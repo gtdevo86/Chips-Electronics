@@ -7,11 +7,14 @@ import AdminRoutes from './routes/AdminRoutes'
 import UserRoutes from './routes/UserRoutes'
 import ProductOrderRoutes from './routes/ProductOrderRoutes'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Protected from './helpers/Protected'
 
 const App = () => {
   const [backgroundColor, setBackgroundColor] = useState('white')
   const { fullPath } = useSelector((state) => state.url)
   var routesArray = AdminRoutes.concat(ProductOrderRoutes).concat(UserRoutes)
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
 
   const whiteRegexArray = useMemo(
     () => [
@@ -45,7 +48,19 @@ const App = () => {
           <Container>
             <Routes>
               {routesArray.map((route, i) => (
-                <Route key={i} path={route.path} element={route.element} />
+                <Route
+                  key={i}
+                  path={route.path}
+                  element={
+                    <Protected
+                      protect={route.protected}
+                      userInfo={userInfo}
+                      adminRequired={route.adminRequired}
+                    >
+                      {route.element}
+                    </Protected>
+                  }
+                />
               ))}
             </Routes>
           </Container>

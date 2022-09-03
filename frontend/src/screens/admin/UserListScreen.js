@@ -4,7 +4,6 @@ import { Table, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../../components/HelperComonents/Message'
 import { deleteUser, listUsers } from '../../actions/userActions'
-import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCheck,
@@ -15,25 +14,17 @@ import {
 
 const UserListScreen = () => {
   document.title = 'User List'
-  const navigate = useNavigate()
   const dispatch = useDispatch()
 
   const userList = useSelector((state) => state.userList)
   const { loading, error, users } = userList
 
-  const userLogin = useSelector((state) => state.userLogin)
-  const { userInfo } = userLogin
-
   const userDelete = useSelector((state) => state.userDelete)
   const { success: successDelete } = userDelete
 
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
-      dispatch(listUsers())
-    } else {
-      navigate('/login')
-    }
-  }, [dispatch, navigate, userInfo, successDelete])
+    dispatch(listUsers())
+  }, [dispatch, successDelete])
 
   const deleteHandler = (id) => {
     if (window.confirm('Are you sure')) {

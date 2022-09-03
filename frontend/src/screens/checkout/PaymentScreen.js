@@ -14,13 +14,6 @@ const PaymentScreen = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [paymentMethod, setPaymentMethod] = useState('')
-  /*
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [cardNumber, setCardNumber] = useState('')
-  const [expDate, setExpDate] = useState('')
-  const [cvv, setCVV] = useState('')
-  */
 
   const cart = useSelector((state) => state.cart)
   const { cartItems, error, paymentMethodSuccess } = cart

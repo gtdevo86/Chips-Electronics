@@ -11,6 +11,9 @@ import {
   PRODUCT_UPDATE_RESET,
 } from '../../constants/productConstants'
 
+import { config } from '../../constants/urlConstants'
+const { API_URL } = config
+
 const ProductEditScreen = () => {
   document.title = 'Edit Product'
 
@@ -39,9 +42,6 @@ const ProductEditScreen = () => {
   const [filter5Name, setFilter5Name] = useState('')
   const [filter5Value, setFilter5Value] = useState('')
 
-  const userLogin = useSelector((state) => state.userLogin)
-  const { userInfo } = userLogin
-
   const productDetails = useSelector((state) => state.productDetails)
   const { loading, error, product } = productDetails
 
@@ -53,38 +53,34 @@ const ProductEditScreen = () => {
   }, [dispatch])
 
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
-      if (successUpdate) {
-        dispatch({ type: PRODUCT_UPDATE_RESET })
-        navigate('/admin/productlist')
-      } else if (!error) {
-        if (!product.name) {
-          dispatch(listProductDetails(productId, false))
-        } else {
-          setName(product.name)
-          setPrice(product.price)
-          setImage(product.image)
-          setBrand(product.brand)
-          setCategory(product.category)
-          setCountInStock(product.countInStock)
-          setDescription(product.description)
-          setIsLive(product.isLive)
-          setFilter1Name(product.filter1.name)
-          setFilter1Value(product.filter1.value)
-          setFilter2Name(product.filter2.name)
-          setFilter2Value(product.filter2.value)
-          setFilter3Name(product.filter3.name)
-          setFilter3Value(product.filter3.value)
-          setFilter4Name(product.filter4.name)
-          setFilter4Value(product.filter4.value)
-          setFilter5Name(product.filter5.name)
-          setFilter5Value(product.filter5.value)
-        }
+    if (successUpdate) {
+      dispatch({ type: PRODUCT_UPDATE_RESET })
+      navigate('/admin/productlist')
+    } else if (!error) {
+      if (!product.name) {
+        dispatch(listProductDetails(productId, false))
+      } else {
+        setName(product.name)
+        setPrice(product.price)
+        setImage(product.image)
+        setBrand(product.brand)
+        setCategory(product.category)
+        setCountInStock(product.countInStock)
+        setDescription(product.description)
+        setIsLive(product.isLive)
+        setFilter1Name(product.filter1.name)
+        setFilter1Value(product.filter1.value)
+        setFilter2Name(product.filter2.name)
+        setFilter2Value(product.filter2.value)
+        setFilter3Name(product.filter3.name)
+        setFilter3Value(product.filter3.value)
+        setFilter4Name(product.filter4.name)
+        setFilter4Value(product.filter4.value)
+        setFilter5Name(product.filter5.name)
+        setFilter5Value(product.filter5.value)
       }
-    } else {
-      navigate('/login')
     }
-  }, [dispatch, navigate, productId, userInfo, product, successUpdate, error])
+  }, [dispatch, navigate, productId, product, successUpdate, error])
 
   const uploadFileHandler = async (e) => {
     const file = e.target.files[0]
@@ -99,7 +95,7 @@ const ProductEditScreen = () => {
       }
 
       const { data } = await axios.post(
-        `/api/upload/${productId}`,
+        `${API_URL}/api/upload/${productId}`,
         formData,
         config
       )

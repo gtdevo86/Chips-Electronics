@@ -1,47 +1,51 @@
 import express from 'express'
-import multer from 'multer'
-import path from 'path'
-import fs from 'fs'
+import { format } from 'util'
 const router = express.Router()
+import Multer from 'multer'
+import { Storage } from '@google-cloud/storage'
 
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    var dest = 'uploads/' + req.params.id
-    var stat = null
-    try {
-      stat = fs.statSync(dest)
-    } catch (err) {
-      fs.mkdirSync(dest)
-    }
-    cb(null, dest)
-  },
-  filename(req, file, cb) {
-    cb(null, `${Date.now()}${path.extname(file.originalname)}`)
-  },
-})
-
-function checkFileType(file, cb) {
-  const filetypes = /jpg|jpeg|png|webp/
-  const extname = filetypes.test(
-    path.extname(file.originalname).toLocaleLowerCase()
-  )
-  const mimetype = filetypes.test(file.mimetype)
-
-  if (extname && mimetype) {
-    return cb(null, true)
-  } else {
-    cb('Images only!')
-  }
+var storage = null
+if (process.env.NODE_ENV === 'production') {
+  storage = new Storage()
+} else {
+  storage = new Storage({
+    projectId: 'chips-electronics',
+    keyFilename: '../keys.json',
+  })
 }
-const upload = multer({
-  storage,
-  fileFilter: function (req, file, cb) {
-    checkFileType(file, cb)
+const bucket = storage.bucket('chips-electronics.appspot.com')
+const multer = Multer({
+  storage: Multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // no larger than 5mb, you can change as needed.
   },
 })
+import path from 'path'
 
-router.post('/:id', upload.single('image'), (req, res) => {
-  res.send(`/${req.file.path}`)
+router.post('/:id', multer.single('image'), (req, res, next) => {
+  if (!req.file) {
+    res.status(400).send('No file uploaded.')
+    return
+  }
+
+  // Create a new blob in the bucket and upload the file data.
+  const blob = bucket.file(
+    `uploads/${req.params.id}${path.extname(req.file.originalname)}`
+  )
+  const blobStream = blob.createWriteStream()
+
+  blobStream.on('error', (err) => {
+    next(err)
+  })
+
+  blobStream.on('finish', () => {
+    // The public URL can be used to directly access the file via HTTP.
+    const publicUrl = format(
+      `https://storage.googleapis.com/${bucket.name}/${blob.name}`
+    )
+    res.status(200).send(publicUrl)
+  })
+
+  blobStream.end(req.file.buffer)
 })
-
 export default router

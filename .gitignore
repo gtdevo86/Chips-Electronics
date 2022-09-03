@@ -12,6 +12,7 @@ node_modules/
 # production
 /frontend/build
 
+
 # misc
 .DS_Store
 .env
@@ -26,3 +27,8 @@ yarn-error.log*
 
 #backup
 /backup
+
+#yaml
+*.yaml
+
+backend/keys.json

@@ -6,9 +6,10 @@ import {
   CART_SAVE_PAYMENT_FAIL,
   CART_SAVE_PAYMENT_METHOD,
 } from '../constants/cartConstants'
-
+import { config } from '../constants/urlConstants'
+const { API_URL } = config
 export const addToCart = (id, qty) => async (dispatch, getState) => {
-  const { data } = await axios.get(`/api/products/${id}`)
+  const { data } = await axios.get(`${API_URL}/api/products/${id}`)
 
   dispatch({
     type: CART_ADD_ITEM,

@@ -36,9 +36,6 @@ const ProductScreen = () => {
   const productDetails = useSelector((state) => state.productDetails)
   const { loading, error, product } = productDetails
 
-  const userLogin = useSelector((state) => state.userLogin)
-  const { userInfo } = userLogin
-
   useEffect(() => {
     dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
     dispatch({ type: PRODUCT_DETAILS_RESET })

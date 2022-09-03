@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
 import { useNavigate, Link } from 'react-router-dom'
 import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { createOrder } from '../../actions/orderActions'
 import Message from '../../components/HelperComonents/Message'
-import { ORDER_CREATE_RESET } from '../../constants/orderConstants'
 import CheckoutSteps from '../../components/OrderComponents/CheckoutSteps'
 import ShippingModal from '../../components/OrderComponents/ShippingModal'
 import BillingModal from '../../components/OrderComponents/BillingModal'
 import PaymentModel from '../../components/OrderComponents/PaymentModal'
-import { PayPalButton } from 'react-paypal-button-v2'
 import { CLEAR_CART } from '../../constants/cartConstants'
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js'
 
 const PlaceOrderScreen = () => {
   document.title = 'Review Order'
@@ -25,61 +23,49 @@ const PlaceOrderScreen = () => {
   const orderCreate = useSelector((state) => state.orderCreate)
   const { order, success, error } = orderCreate
 
-  const [sdkReady, setSdkReady] = useState(false)
   const [shippingShow, setShippingShow] = useState(false)
   const [billingShow, setBillingShow] = useState(false)
   const [paymentShow, setPaymentShow] = useState(false)
 
+  const initialOptions = {
+    'client-id':
+      'AapNjK2aecFoXKIonLTepquFJOF0XmPH6yxZCnniYk4ZHKvRgVzdGmnXQ0kpkJeNMTXLsynzmuLQYIjh',
+    currency: 'USD',
+    intent: 'capture',
+    'disable-funding': 'credit,card',
+  }
+
   useEffect(() => {
-    if (cartItems.length === 0) {
+    if (cartItems.length === 0 && !success) {
       navigate('/cart')
     }
-  }, [navigate, cartItems])
+  }, [navigate, cartItems, success])
 
   useEffect(() => {
     if (success) {
       dispatch({ type: CLEAR_CART })
-      dispatch({ type: ORDER_CREATE_RESET })
       navigate(`/order/${order._id}`)
     }
-  }, [dispatch, navigate, success, order])
+  }, [navigate, dispatch, order, success])
 
-  useEffect(() => {
-    const addPaypalScript = async () => {
-      const { data: clientId } = await axios.get('/api/config/paypal')
-      const script = document.createElement('script')
-      script.type = 'text/javascript'
-      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&disable-funding=credit,card`
-      script.async = true
-
-      script.onload = () => {
-        setSdkReady(true)
-      }
-      document.body.appendChild(script)
-    }
-    if (!window.paypal) {
-      addPaypalScript()
-    } else {
-      setSdkReady(true)
-    }
-  }, [])
-
-  const successPaymentHandler = (paymentResult) => {
-    const { id, status, update_time, payer } = paymentResult
-    const { email_address } = payer
-    dispatch(
-      createOrder({
-        orderItems: cart.cartItems,
-        shippingAddress: cart.shippingAddress,
-        billingAddress: cart.billingAddress,
-        paymentMethod: cart.paymentMethod,
-        payPalResult: { id, status, update_time, email_address },
-        subTotal: cart.subTotal,
-        shippingCost: cart.shippingCost,
-        tax: cart.tax,
-        total: cart.total,
-      })
-    )
+  const successPaymentHandler = (data, actions) => {
+    actions.order.capture().then((details) => {
+      const { id, status, update_time, payer } = details
+      const { email_address } = payer
+      dispatch(
+        createOrder({
+          orderItems: cart.cartItems,
+          shippingAddress: cart.shippingAddress,
+          billingAddress: cart.billingAddress,
+          paymentMethod: cart.paymentMethod,
+          payPalResult: { id, status, update_time, email_address },
+          subTotal: cart.subTotal,
+          shippingCost: cart.shippingCost,
+          tax: cart.tax,
+          total: cart.total,
+        })
+      )
+    })
   }
 
   const placeOrderHandler = () => {}
@@ -268,16 +254,24 @@ const PlaceOrderScreen = () => {
                 <Row>
                   <div className='d-grid gap-2'>
                     {paymentMethod === 'Paypal' ? (
-                      <>
-                        {!sdkReady ? (
-                          <></>
-                        ) : (
-                          <PayPalButton
-                            amount={cart.total}
-                            onSuccess={successPaymentHandler}
-                          />
-                        )}
-                      </>
+                      <PayPalScriptProvider options={initialOptions}>
+                        <PayPalButtons
+                          createOrder={(data, actions) => {
+                            return actions.order.create({
+                              purchase_units: [
+                                {
+                                  amount: {
+                                    value: cart.total,
+                                  },
+                                },
+                              ],
+                            })
+                          }}
+                          onApprove={(data, actions) =>
+                            successPaymentHandler(data, actions)
+                          }
+                        />
+                      </PayPalScriptProvider>
                     ) : (
                       <Button type='button' onClick={placeOrderHandler}>
                         Place Order

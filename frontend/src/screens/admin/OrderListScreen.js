@@ -3,28 +3,18 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { Table, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../../components/HelperComonents/Message'
-import { useNavigate } from 'react-router-dom'
 import { listOrders } from '../../actions/orderActions'
 
 const OrderListScreen = () => {
   document.title = 'Order List'
-  const navigate = useNavigate()
   const dispatch = useDispatch()
 
   const orderList = useSelector((state) => state.orderList)
   const { loading, error, orders } = orderList
 
-  const userLogin = useSelector((state) => state.userLogin)
-  const { userInfo } = userLogin
-
   useEffect(() => {
-    if (error === 'Not authorized, no token') navigate('/logout')
-    if (userInfo && userInfo.isAdmin) {
-      dispatch(listOrders())
-    } else {
-      navigate('/login')
-    }
-  }, [dispatch, navigate, userInfo, error])
+    dispatch(listOrders())
+  }, [dispatch])
 
   const addDecimals = (num) => {
     return (Math.round(num * 100) / 100).toFixed(2)

@@ -29,4 +29,4 @@ sb-qget610533639@personal.example.com
 9eI+^-#K
 ```
 # Live Version
-https://chips-electronics.herokuapp.com/
+https://chips-electronics.uc.r.appspot.com/

@@ -22,7 +22,7 @@ const protect = asyncHandler(async (req, res, next) => {
   }
 })
 
-const protectOptional = asyncHandler(async (req, res, next) => {
+const optional = asyncHandler(async (req, res, next) => {
   let token
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
@@ -49,4 +49,4 @@ const admin = (req, res, next) => {
   }
 }
 
-export { protect, admin, protectOptional }
+export { protect, admin, optional }

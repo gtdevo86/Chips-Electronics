@@ -1,6 +1,4 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux'
-import thunk from 'redux-thunk'
-import { composeWithDevTools } from 'redux-devtools-extension'
+import { configureStore } from '@reduxjs/toolkit'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import {
@@ -44,39 +42,33 @@ const userLoginPersistConfig = {
   storage,
   whitelist: ['userInfo'],
 }
-
-const reducer = combineReducers({
-  productList: productListReducer,
-  productDetails: productDetailsReducer,
-  productCreate: productCreateReducer,
-  productUpdate: productUpdateReducer,
-  productDelete: productDeleteReducer,
-  productReviewCreate: productReviewCreateReducer,
-  productReviewUpdate: productReviewUpdateReducer,
-  productTopRated: productTopRatedReducer,
-  productListFiltered: productListFilteredReducer,
-  cart: persistReducer(cartPersistConfig, cartReducer),
-  url: urlReducer,
-  userLogin: persistReducer(userLoginPersistConfig, userLoginReducer),
-  userRegister: userRegisterReducer,
-  userDetails: userDetailsReducer,
-  userList: userListReducer,
-  userUpdate: userUpdateReducer,
-  userDelete: userDeleteReducer,
-  userUpdateProfile: userUpdateProfileReducer,
-  orderCreate: orderCreateReducer,
-  orderDetails: orderDetailsReducer,
-  myOrders: myOrdersReducer,
-  orderList: orderListReducer,
-  orderDeliveryStatus: orderDeliveryStatusReducer,
+const store = configureStore({
+  reducer: {
+    productList: productListReducer,
+    productDetails: productDetailsReducer,
+    productCreate: productCreateReducer,
+    productUpdate: productUpdateReducer,
+    productDelete: productDeleteReducer,
+    productReviewCreate: productReviewCreateReducer,
+    productReviewUpdate: productReviewUpdateReducer,
+    productTopRated: productTopRatedReducer,
+    productListFiltered: productListFilteredReducer,
+    cart: persistReducer(cartPersistConfig, cartReducer),
+    url: urlReducer,
+    userLogin: persistReducer(userLoginPersistConfig, userLoginReducer),
+    userRegister: userRegisterReducer,
+    userDetails: userDetailsReducer,
+    userList: userListReducer,
+    userUpdate: userUpdateReducer,
+    userDelete: userDeleteReducer,
+    userUpdateProfile: userUpdateProfileReducer,
+    orderCreate: orderCreateReducer,
+    orderDetails: orderDetailsReducer,
+    myOrders: myOrdersReducer,
+    orderList: orderListReducer,
+    orderDeliveryStatus: orderDeliveryStatusReducer,
+  },
 })
-
-const middleware = [thunk]
-
-const store = createStore(
-  reducer,
-  composeWithDevTools(applyMiddleware(...middleware))
-)
 
 const persistor = persistStore(store)
 

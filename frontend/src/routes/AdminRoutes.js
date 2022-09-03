@@ -10,26 +10,38 @@ const AdminRoutes = [
   {
     path: '/admin/user/:id/edit',
     element: <UserEditScreen />,
+    protected: true,
+    adminRequired: true,
   },
   {
     path: '/admin/userlist',
     element: <UserListScreen />,
+    protected: true,
+    adminRequired: true,
   },
   {
     path: '/admin/productlist',
     element: <ProductListScreen />,
+    protected: true,
+    adminRequired: true,
   },
   {
     path: '/admin/orderlist',
     element: <OrderListScreen />,
+    protected: true,
+    adminRequired: true,
   },
   {
     path: '/admin/product/:id/edit',
     element: <ProductEditScreen />,
+    protected: true,
+    adminRequired: true,
   },
   {
     path: '/admin/product/create',
     element: <ProductCreateScreen />,
+    protected: true,
+    adminRequired: true,
   },
 ]
 

@@ -16,12 +16,13 @@ import {
   ORDER_LIST_REQUEST,
   ORDER_LIST_SUCCESS,
 } from '../constants/orderConstants'
-
+import { config } from '../constants/urlConstants'
+const { API_URL } = config
 export const createOrder = (order) => async (dispatch, getState) => {
   try {
     dispatch({ type: ORDER_CREATE_REQUEST })
 
-    const { data } = await axios.post('/api/orders', order)
+    const { data } = await axios.post(`${API_URL}/api/orders`, order)
 
     dispatch({
       type: ORDER_CREATE_SUCCESS,
@@ -44,7 +45,7 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
       type: ORDER_DETAILS_REQUEST,
     })
 
-    const { data } = await axios.get(`/api/orders/${id}`)
+    const { data } = await axios.get(`${API_URL}/api/orders/${id}`)
 
     await dispatch({
       type: ORDER_DETAILS_SUCCESS,
@@ -67,7 +68,7 @@ export const listMyOrders = () => async (dispatch, getState) => {
       type: MY_ORDERS_REQUEST,
     })
 
-    const { data } = await axios.get('/api/orders/myorders')
+    const { data } = await axios.get(`${API_URL}/api/orders/myorders`)
 
     await dispatch({
       type: MY_ORDERS_SUCCESS,
@@ -90,7 +91,7 @@ export const listOrders = () => async (dispatch, getState) => {
       type: ORDER_LIST_REQUEST,
     })
 
-    const { data } = await axios.get('/api/orders')
+    const { data } = await axios.get(`${API_URL}/api/orders`)
 
     await dispatch({
       type: ORDER_LIST_SUCCESS,
@@ -113,7 +114,10 @@ export const updateDeliveryStatus = (order) => async (dispatch, getState) => {
       type: ORDER_DELIVERY_STATUS_REQUEST,
     })
 
-    const { data } = await axios.put(`/api/orders/${order._id}/updateStatus`, order)
+    const { data } = await axios.put(
+      `${API_URL}/api/orders/${order._id}/updateStatus`,
+      order
+    )
 
     await dispatch({
       type: ORDER_DELIVERY_STATUS_SUCCESS,

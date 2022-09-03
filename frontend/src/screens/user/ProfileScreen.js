@@ -45,18 +45,14 @@ const ProfileScreen = () => {
   }, [dispatch])
 
   useEffect(() => {
-    if (!userInfo) {
-      navigate('/login')
+    if (!user.firstName || user._id !== userInfo._id) {
+      dispatch(getUserDetails('profile'))
     } else {
-      if (!user.firstName || user._id !== userInfo._id) {
-        dispatch(getUserDetails('profile'))
-      } else {
-        setFirstName(user.firstName)
-        setLastName(user.lastName)
-        setEmail(user.email)
-      }
-      dispatch(listMyOrders())
+      setFirstName(user.firstName)
+      setLastName(user.lastName)
+      setEmail(user.email)
     }
+    dispatch(listMyOrders())
   }, [dispatch, navigate, userInfo, user])
 
   const addDecimals = (num) => {
