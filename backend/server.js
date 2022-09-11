@@ -15,10 +15,11 @@ dotenv.config()
 connectDB()
 const app = express()
 
-app.use(cors({ origin: 'https://chips-electronics.uc.r.appspot.com' }))
-
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
+  app.use(cors({ origin: 'http://localhost:3000' }))
+} else if (process.env.NODE_ENV === 'production') {
+  app.use(cors({ origin: 'https://chips-electronics.uc.r.appspot.com' }))
 }
 app.use(express.json())
 app.use('/api/orders', orderRoutes)
