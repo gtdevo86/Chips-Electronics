@@ -8,6 +8,7 @@ import FormContainer from '../../components/HelperComonents/FormContainer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faEnvelope, faUserShield } from '@fortawesome/free-solid-svg-icons'
 import { USER_UPDATE_RESET } from '../../constants/userConstants'
+import Loader from '../../components/Loader'
 
 const UserEditScreen = () => {
   document.title = 'Edit User'
@@ -62,7 +63,7 @@ const UserEditScreen = () => {
         <h1 style={{ textAlign: 'center' }}>Edit User</h1>
         {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
         {loading ? (
-          <></>
+          <Loader></Loader>
         ) : error ? (
           <Message variant='danger'>{error}</Message>
         ) : (

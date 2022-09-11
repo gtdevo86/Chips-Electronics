@@ -32,3 +32,4 @@ yarn-error.log*
 *.yaml
 
 backend/keys.json
+*.bat

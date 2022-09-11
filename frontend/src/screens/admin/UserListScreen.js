@@ -11,6 +11,7 @@ import {
   faTrash,
   faEdit,
 } from '@fortawesome/free-solid-svg-icons'
+import Loader from '../../components/Loader'
 
 const UserListScreen = () => {
   document.title = 'User List'
@@ -36,7 +37,7 @@ const UserListScreen = () => {
     <>
       <h1>Users</h1>
       {loading ? (
-        <></>
+        <Loader></Loader>
       ) : error ? (
         <Message variant='danger'>{error}</Message>
       ) : (

@@ -12,6 +12,7 @@ import {
 } from '../../constants/productConstants'
 
 import { config } from '../../constants/urlConstants'
+import Loader from '../../components/Loader'
 const { API_URL } = config
 
 const ProductEditScreen = () => {
@@ -152,7 +153,7 @@ const ProductEditScreen = () => {
         <h1 style={{ textAlign: 'center' }}>Edit Product</h1>
         {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
         {loading ? (
-          <></>
+          <Loader></Loader>
         ) : error ? (
           <Message variant='danger'>{error}</Message>
         ) : (
