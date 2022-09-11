@@ -22,6 +22,7 @@ import {
 } from '../../constants/productConstants'
 import ReviewTab from '../../components/ProductComponents/ReviewTab'
 import DescriptionTab from '../../components/ProductComponents/DescriptionTab'
+import Loader from '../../components/Loader'
 
 const ProductScreen = () => {
   //document.title = 'loading...'
@@ -57,7 +58,7 @@ const ProductScreen = () => {
         Go back
       </Link>
       {loading ? (
-        <></>
+        <Loader></Loader>
       ) : error ? (
         <Message variant='danger'>{error}</Message>
       ) : (

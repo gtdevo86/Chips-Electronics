@@ -14,6 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { LinkContainer } from 'react-router-bootstrap'
 import { USER_UPDATE_PROFILE_RESET } from '../../constants/userConstants'
+import Loader from '../../components/Loader'
 
 const ProfileScreen = () => {
   document.title = 'User Profile'
@@ -165,7 +166,7 @@ const ProfileScreen = () => {
       <Col md={9}>
         <h2>My Orders</h2>
         {loadingOrders ? (
-          <></>
+          <Loader></Loader>
         ) : errorOrders ? (
           <Message variant='danger'>{errorOrders}</Message>
         ) : (

@@ -4,6 +4,7 @@ import { Table, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../../components/HelperComonents/Message'
 import { listOrders } from '../../actions/orderActions'
+import Loader from '../../components/Loader'
 
 const OrderListScreen = () => {
   document.title = 'Order List'
@@ -24,7 +25,7 @@ const OrderListScreen = () => {
     <>
       <h1>Orders</h1>
       {loading ? (
-        <></>
+        <Loader></Loader>
       ) : error ? (
         <Message variant='danger'>{error}</Message>
       ) : (

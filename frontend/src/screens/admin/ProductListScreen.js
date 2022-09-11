@@ -16,6 +16,7 @@ import { deleteProduct, listProducts } from '../../actions/productActions'
 import { PRODUCT_CREATE_RESET } from '../../constants/productConstants'
 import Paginate from '../../components/HelperComonents/Paginate'
 import queryString from 'query-string'
+import Loader from '../../components/Loader'
 
 const ProductListScreen = () => {
   document.title = 'Product List'
@@ -61,7 +62,7 @@ const ProductListScreen = () => {
       </Row>
       {errorDelete && <Message variant='danger'></Message>}
       {loading || loadingDelete ? (
-        <></>
+        <Loader></Loader>
       ) : error ? (
         <Message variant='danger'>{error}</Message>
       ) : (

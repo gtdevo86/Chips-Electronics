@@ -9,6 +9,7 @@ import {
   ORDER_DELIVERY_STATUS_RESET,
   ORDER_DETAILS_RESET,
 } from '../../constants/orderConstants'
+import Loader from '../../components/Loader'
 
 const ViewOrderScreen = () => {
   document.title = 'Order Details'
@@ -68,7 +69,7 @@ const ViewOrderScreen = () => {
       {error ? (
         <Message variant='danger '>{error}</Message>
       ) : loading ? (
-        <></>
+        <Loader></Loader>
       ) : (
         <>
           <h2>

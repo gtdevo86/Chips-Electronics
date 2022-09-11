@@ -8,6 +8,7 @@ import { useLocation } from 'react-router-dom'
 import Paginate from '../../components/HelperComonents/Paginate'
 import queryString from 'query-string'
 import ProductCarousel from '../../components/ProductComponents/ProductCarousel'
+import Loader from '../../components/Loader'
 
 const HomeScreen = () => {
   document.title = 'Welcome to Chips Electronics'
@@ -29,7 +30,7 @@ const HomeScreen = () => {
       {!keyword && <ProductCarousel />}
       <h1>Latest Products</h1>
       {loading ? (
-        <></>
+        <Loader></Loader>
       ) : error ? (
         <Message variant='danger '>{error}</Message>
       ) : (

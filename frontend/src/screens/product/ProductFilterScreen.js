@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import Paginate from '../../components/HelperComonents/Paginate'
 import queryString from 'query-string'
 import filters from '../../helpers/filterModel'
+import Loader from '../../components/Loader'
 
 const ProductFilterScreen = () => {
   document.title = 'Welcome to Chips Electronics'
@@ -177,7 +178,7 @@ const ProductFilterScreen = () => {
     <>
       <h1>Latest Products</h1>
       {loading || !pageFilterArray ? (
-        <></>
+        <Loader></Loader>
       ) : error ? (
         <Message variant='danger '>{error}</Message>
       ) : (
